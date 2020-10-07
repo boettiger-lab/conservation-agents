@@ -51,11 +51,11 @@ def simulate(environment, model):
 
 
 out = simulate(env, model)
-np.savetxt("sac.csv", out, delimiter=",")
+np.savetxt("../results/sac.csv", out, delimiter=",")
 
 # ### Vizualisation
 
-datapath = '/Users/kevinab/Desktop/PRe/conservation-agents/sac.csv'
+datapath = '../results/sac.csv'
 results = pd.read_csv(datapath, names=['time','state','harvest','action'])
 
 plt.plot(results.iloc[:,1])

@@ -54,7 +54,7 @@ np.savetxt("td3.csv", out, delimiter=",")
 
 # ### Vizualisation
 
-datapath = '/Users/kevinab/Desktop/PRe/conservation-agents/td3.csv'
+datapath = '../results/td3.csv'
 results = pd.read_csv(datapath, names=['time','state','harvest','action'])
 
 plt.plot(results.iloc[:,1])
