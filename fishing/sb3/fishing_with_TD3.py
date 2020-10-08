@@ -50,23 +50,23 @@ def simulate(environment, model):
 
 
 out = simulate(env, model)
-np.savetxt("td3.csv", out, delimiter=",")
+np.savetxt("results/td3.csv", out, delimiter=",")
 
 # ### Vizualisation
 
-datapath = '../results/td3.csv'
+datapath = 'results/td3.csv'
 results = pd.read_csv(datapath, names=['time','state','harvest','action'])
 
 plt.plot(results.iloc[:,1])
 plt.ylabel('state')
-plt.show()
+plt.savefig("results/td3_state.png")
 
 plt.plot(results.iloc[:,2])
 plt.ylabel('action')
-plt.show()
+plt.savefig("results/td3_action.png")
 
 plt.plot(results.iloc[:,3])
 plt.ylabel('reward')
-plt.show()
+plt.savefig("results/td3_reward.png")
 
 

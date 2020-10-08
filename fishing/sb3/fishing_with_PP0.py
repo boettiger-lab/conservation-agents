@@ -50,23 +50,23 @@ def simulate(environment, model):
 
 
 out = simulate(env, model)
-np.savetxt("../results/ppo.csv", out, delimiter=",")
+np.savetxt("results/ppo.csv", out, delimiter=",")
 
 # ### Vizualisation
 
-datapath = '../results/ppo.csv'
+datapath = 'results/ppo.csv'
 results = pd.read_csv(datapath, names=['time','state','harvest','action'])
 
 plt.plot(results.iloc[:,1])
 plt.ylabel('state')
-plt.show()
+plt.savefig("results/ppo_state.png")
 
 plt.plot(results.iloc[:,2])
 plt.ylabel('action')
-plt.show()
+plt.savefig("results/ppo_action.png")
 
 plt.plot(results.iloc[:,3])
 plt.ylabel('reward')
-plt.show()
+plt.savefig("results/ppo_reward.png")
 
 
