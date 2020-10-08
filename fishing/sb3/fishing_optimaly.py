@@ -90,19 +90,17 @@ time_step
 
 out = simulate(env)
 
-plt.plot(out[:,1])
-plt.ylabel('state')
-plt.xlabel('time')
-plt.show()
 
-plt.plot(out[:,2])
-plt.ylabel('action')
-plt.xlabel('time')
-plt.show()
 
-plt.plot(out[:,3])
-plt.ylabel('reward')
-plt.xlabel('time')
-plt.show()
+fig, axs = plt.subplots(3,1)
+axs[0].plot(out[:,0], out[:,1])
+axs[0].set_ylabel('state')
+axs[1].plot((out[:,0], out[:,2])
+axs[1].set_ylabel('action')
+axs[2].plot((out[:,0], out[:,3])
+axs[2].set_ylabel('reward')
+
+fig.tight_layout()
+plt.savefig("results/optimal.png")
 
 

@@ -91,16 +91,18 @@ random_policy = random_tf_policy.RandomTFPolicy(train_env.time_step_spec(), trai
 
 out = simulate(eval_env, random_policy)
 
-plt.plot(out[:,1])
-plt.ylabel('state')
-plt.show()
 
-plt.plot(out[:,2])
-plt.ylabel('action')
-plt.show()
 
-plt.plot(out[:,3])
-plt.ylabel('reward')
-plt.show()
+fig, axs = plt.subplots(3,1)
+axs[0].plot(out[:,0], out[:,1])
+axs[0].set_ylabel('state')
+axs[1].plot((out[:,0], out[:,2])
+axs[1].set_ylabel('action')
+axs[2].plot((out[:,0], out[:,3])
+axs[2].set_ylabel('reward')
+
+fig.tight_layout()
+plt.savefig("results/random.png")
+
 
 

@@ -53,19 +53,19 @@ np.savetxt("results/a2c.csv", out, delimiter=",")
 
 # ### Vizualisation
 
-datapath = 'results/a2c.csv'
-results = pd.read_csv(datapath, names=['time','state','harvest','action'])
+results = pd.read_csv('results/a2c.csv',
+                      names=['time','state','action','reward'])
 
-plt.plot(results.iloc[:,1])
-plt.ylabel('state')
-plt.savefig("results/a2c_state.png")
+fig, axs = plt.subplots(3,1)
+axs[0].plot(results.time, results.state)
+axs[0].set_ylabel('state')
+axs[1].plot(results.time, results.action)
+axs[1].set_ylabel('action')
+axs[2].plot(results.time, results.reward)
+axs[2].set_ylabel('reward')
 
-plt.plot(results.iloc[:,2])
-plt.ylabel('action')
-plt.savefig("results/a2c_action.png")
+fig.tight_layout()
+plt.savefig("results/a2c.png")
 
-plt.plot(results.iloc[:,3])
-plt.ylabel('reward')
-plt.savefig("results/a2c_reward.png")
 
 
