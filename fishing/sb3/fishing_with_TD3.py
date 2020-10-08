@@ -24,17 +24,13 @@ import gym_fishing
 
 from stable_baselines3 import TD3
 
-# + tags=[]
 # We use fishing-v1 to test TD3 because it use a continuous action space
 env = gym.make('fishing-v1')
 env.n_actions = 100
 model = TD3('MlpPolicy', env, verbose=1)
 
-# + tags=["outputPrepend"]
 model.learn(total_timesteps=200000)
 
-
-# -
 
 def simulate(environment, model):
   obs = env.reset()
@@ -54,19 +50,16 @@ np.savetxt("results/td3.csv", out, delimiter=",")
 
 # ### Vizualisation
 
-datapath = 'results/td3.csv'
-results = pd.read_csv(datapath, names=['time','state','harvest','action'])
+results = pd.read_csv('results/td3.csv',
+                      names=['time','state','action','reward'])
 
-plt.plot(results.iloc[:,1])
-plt.ylabel('state')
-plt.savefig("results/td3_state.png")
+fig, axs = plt.subplots(3,1)
+axs[0].plot(results.time, results.state)
+axs[0].set_ylabel('state')
+axs[1].plot(results.time, results.action)
+axs[1].set_ylabel('action')
+axs[2].plot(results.time, results.reward)
+axs[2].set_ylabel('reward')
 
-plt.plot(results.iloc[:,2])
-plt.ylabel('action')
-plt.savefig("results/td3_action.png")
-
-plt.plot(results.iloc[:,3])
-plt.ylabel('reward')
-plt.savefig("results/td3_reward.png")
-
-
+fig.tight_layout()
+plt.savefig("results/td3.png")
