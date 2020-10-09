@@ -6,7 +6,7 @@ from leaderboard import leaderboard
 
 env = gym.make('fishing-v1')
 model = TD3('MlpPolicy', env, verbose=0)
-model.learn(total_timesteps=200000)
+model.learn(total_timesteps=400000)
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
