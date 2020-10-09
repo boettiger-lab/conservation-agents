@@ -5,7 +5,7 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
-env = gym.make('fishing-v0')
+env = gym.make('fishing-v0', n_actions = 100)
 model = PPO('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=300000)
 
