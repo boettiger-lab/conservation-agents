@@ -16,8 +16,7 @@ model.save("results/TD3")
 mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
 print("mean reward:", mean_reward, "std:", std_reward)
 
-## Visualize
-
+## Simulate a single replicate
 def simulate(environment, model):
   obs = env.reset()
   episode_return = 0.0
@@ -30,12 +29,10 @@ def simulate(environment, model):
     output[it] = (it, obs, action, episode_return)
   return output
 
-
 out = simulate(env, model)
 np.savetxt("results/td3.csv", out, delimiter=",")
 
-# ### Vizualisation
-
+## Vizualise that replicate:
 results = pd.read_csv('results/td3.csv',
                       names=['time','state','action','reward'])
 
