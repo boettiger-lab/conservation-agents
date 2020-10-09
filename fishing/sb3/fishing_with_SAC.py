@@ -19,4 +19,4 @@ print("mean reward:", mean_reward, "std:", std_reward)
 leaderboard("SAC", mean_reward, std_reward)
 
 
-model.save("results/SAC")
+model.save("models/SAC")

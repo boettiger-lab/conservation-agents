@@ -22,4 +22,4 @@ print("mean reward:", mean_reward, "std:", std_reward)
 leaderboard("DQN", mean_reward, std_reward)
 
 # Save the agent
-model.save("results/dqn_fish_v0")
+model.save("models/dqn_fish_v0")

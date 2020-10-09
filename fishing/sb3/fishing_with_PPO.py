@@ -20,4 +20,4 @@ print("mean reward:", mean_reward, "std:", std_reward)
 leaderboard("PPO", mean_reward, std_reward)
 
 
-model.save("results/ppo")
+model.save("models/ppo")

@@ -19,4 +19,4 @@ mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episode
 print("mean reward:", mean_reward, "std:", std_reward)
 leaderboard("A2C", mean_reward, std_reward)
 
-model.save("results/a2c")
+model.save("models/a2c")
