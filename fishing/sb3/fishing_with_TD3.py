@@ -1,36 +1,20 @@
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.6.0
-#   kernelspec:
-#     display_name: 'Python 3.7.6 64-bit (''base'': conda)'
-#     name: python_defaultSpec_1594220376995
-# ---
 
-# # Fishing with TD3
-
-# +
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-
 import gym
 import gym_fishing
-
 from stable_baselines3 import TD3
+from stable_baselines3.common.evaluation import evaluate_policy
 
 # We use fishing-v1 to test TD3 because it use a continuous action space
 env = gym.make('fishing-v1')
-env.n_actions = 100
 model = TD3('MlpPolicy', env, verbose=1)
-
 model.learn(total_timesteps=200000)
 
+# Evaluate the agent
+mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes = 100)
+print("mean reward:", mean_reward, "std:", std_reward)
 
 def simulate(environment, model):
   obs = env.reset()

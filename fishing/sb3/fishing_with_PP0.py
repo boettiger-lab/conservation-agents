@@ -1,40 +1,19 @@
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.6.0
-#   kernelspec:
-#     display_name: Python 3
-#     language: python
-#     name: python3
-# ---
+## GYM FISHING WITH PP0
 
-# # GYM FISHING WITH PP0
-
-# +
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-
 import gym
 import gym_fishing
-
 from stable_baselines3 import PPO
+from stable_baselines3.common.evaluation import evaluate_policy
 
-# + tags=[]
 env = gym.make('fishing-v0')
-env.n_actions = 100
 model = PPO('MlpPolicy', env, verbose=1)
-
-# + tags=["outputPrepend"]
 model.learn(total_timesteps=200000)
 
 
-# -
+
 
 def simulate(environment, model):
   obs = env.reset()
