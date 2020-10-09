@@ -3,7 +3,7 @@ import gym_fishing
 from stable_baselines3 import SAC
 import numpy as np
 
-env = gym.make('fishing-v1')
+env = gym.make('fishing-v1', r = 0.1)
 for i in range(5):
     model = SAC.load(f"models/sb3_sac_"+str(i))
 
