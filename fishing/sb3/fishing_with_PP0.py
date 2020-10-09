@@ -7,11 +7,17 @@ import gym
 import gym_fishing
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
+from leaderboard import leaderboard
 
 env = gym.make('fishing-v0')
 model = PPO('MlpPolicy', env, verbose=1)
 model.learn(total_timesteps=200000)
+model.save("results/ppo")
 
+# Evaluate the agent
+mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes = 100)
+print("mean reward:", mean_reward, "std:", std_reward)
+leaderboard("PP0", mean_reward, std_reward)
 
 
 

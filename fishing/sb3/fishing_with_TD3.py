@@ -1,3 +1,4 @@
+## GYM FISHING WITH TD3
 
 import numpy as np
 import pandas as pd
@@ -8,8 +9,6 @@ from stable_baselines3 import TD3
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
-
-# We use fishing-v1 to test TD3 because it use a continuous action space
 env = gym.make('fishing-v1')
 model = TD3('MlpPolicy', env, verbose=1)
 model.learn(total_timesteps=200000)
