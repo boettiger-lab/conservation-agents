@@ -6,7 +6,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
 # Create environment
-env = gym.make('fishing-v0')
+env = gym.make('fishing-v0', n_actions=100)
 # Instantiate the agent
 model = DQN('MlpPolicy', env, verbose=0)
 # Train the agent
