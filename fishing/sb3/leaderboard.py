@@ -18,6 +18,7 @@ def leaderboard(agent, env, mean, std, script, file = "leaderboard.csv"):
                     "std": std,
                     "url": url,
                     "date": datetime.now()}
+    has_header = os.path.exists(file)                
     with open(file, 'a+') as stream:
         writer = csv.DictWriter(stream, 
                                 fieldnames = ["agent", 
@@ -26,7 +27,7 @@ def leaderboard(agent, env, mean, std, script, file = "leaderboard.csv"):
                                               "std", 
                                               "url", 
                                               "date"])
-        if(not os.path.exists(file)):                                      
+        if(not has_header):                                      
             writer.writeheader()
         writer.writerow(row_contents)
 
