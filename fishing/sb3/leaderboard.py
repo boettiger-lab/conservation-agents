@@ -1,9 +1,9 @@
 from datetime import datetime
-from csv import writer
 from git import Repo
+import csv
 import os
-def leaderboard(agent, env, mean, std, script, file = "results/leaderboard.csv"):
-    
+
+def leaderboard(agent, env, mean, std, script, file = "leaderboard.csv"):
     ## Commit file and compute GitHub URL
     repo = Repo(".", search_parent_directories=True)
     path = os.path.relpath(script, repo.git.working_dir)
@@ -12,15 +12,21 @@ def leaderboard(agent, env, mean, std, script, file = "results/leaderboard.csv")
         repo.git.commit("-m 'robot commit before running script'")
     sha = repo.commit().hexsha
     url = repo.git.remote("get-url", "origin") + "/blob/" + sha + "/" + path
+    row_contents = {"agent": agent,
+                    "env": env,
+                    "mean": mean, 
+                    "std": std,
+                    "url": url,
+                    "date": datetime.now()}
+    with open(file, 'a+') as stream:
+        writer = csv.DictWriter(stream, 
+                                fieldnames = ["agent", 
+                                              "env", 
+                                              "mean", 
+                                              "std", 
+                                              "url", 
+                                              "date"])
+        writer.writeheader()
+        writer.writerow(row_contents)
 
-    
-    stream = open(file, 'a+')
-    now = datetime.now()
-    row_contents = [agent,
-                    env,
-                    mean, 
-                    std,
-                    url,
-                    now]
-    csv_writer = writer(stream)
-    csv_writer.writerow(row_contents)
+
