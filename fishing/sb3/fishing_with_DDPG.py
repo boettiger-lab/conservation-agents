@@ -5,8 +5,10 @@ from leaderboard import leaderboard
 from stable_baselines3 import DDPG
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.evaluation import evaluate_policy
+import os
 
-env = gym.make('fishing-v1')
+ENV = "fishing-v1"
+env = gym.make(ENV)
 
 # The noise objects for DDPG
 n_actions = env.action_space.shape[-1]
@@ -23,6 +25,6 @@ env.plot(df, "results/ddpg.png")
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
 print("mean reward:", mean_reward, "std:", std_reward)
-leaderboard("DDPG", mean_reward, std_reward)
+leaderboard("DDPG", ENV, mean_reward, std_reward, os.path.basename(__file__))
 
 model.save("results/ddpg")
