@@ -26,7 +26,9 @@ def leaderboard(agent, env, mean, std, script, file = "leaderboard.csv"):
                                               "std", 
                                               "url", 
                                               "date"])
-        writer.writeheader()
+        if(not os.path.exists(file)):                                      
+            writer.writeheader()
         writer.writerow(row_contents)
 
 
+# leaderboard("X", "B", 3, 0, "leaderboard.py", "test.csv")
