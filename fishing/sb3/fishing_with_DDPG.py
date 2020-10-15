@@ -7,6 +7,8 @@ from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckA
 from stable_baselines3.common.evaluation import evaluate_policy
 import os
 
+url = hash_url(os.path.basename(__file__)) # get hash URL at start of execution
+
 ENV = "fishing-v2"
 env = gym.make(ENV, C = 0.01)
 
@@ -23,8 +25,8 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/ddpg.png")
 
 ## Evaluate model
-mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10)
 print("mean reward:", mean_reward, "std:", std_reward)
-leaderboard("DDPG", ENV, mean_reward, std_reward, os.path.basename(__file__))
+leaderboard("DDPG", ENV, mean_reward, std_reward, url)
 
 model.save("results/ddpg")
