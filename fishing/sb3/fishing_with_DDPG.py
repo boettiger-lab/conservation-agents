@@ -26,7 +26,7 @@ env.plot(df, "results/ddpg.png")
 
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10)
-print("mean reward:", mean_reward, "std:", std_reward)
 leaderboard.leaderboard("DDPG", ENV, mean_reward, std_reward, url)
 
 model.save("results/ddpg")
+print("mean reward:", mean_reward, "std:", std_reward)
