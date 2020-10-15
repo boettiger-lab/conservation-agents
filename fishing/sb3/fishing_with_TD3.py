@@ -9,7 +9,7 @@ ENV = "fishing-v1"
 
 env = gym.make(ENV)
 model = TD3('MlpPolicy', env, verbose=0)
-model.learn(total_timesteps=200000)
+model.learn(total_timesteps=300000)
 #model.load("models/td3")
 
 ## simulate and plot results
