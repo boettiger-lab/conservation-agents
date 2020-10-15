@@ -8,3 +8,4 @@ A2C,fishing-v0,5.0000005,4.7683716e-07,https://github.com/boettiger-lab/conserva
 SAC,fishing-v1,7.3657155,4.7683716e-07,https://github.com/boettiger-lab/conservation-agents/blob/1c932a5abc5f09d5f947b9ae70253f0405b0691f/fishing/sb3/fishing_with_SAC.py,2020-10-14 20:29:09.708030
 TD3,fishing-v1,0.75,0.0,https://github.com/boettiger-lab/conservation-agents/blob/1c932a5abc5f09d5f947b9ae70253f0405b0691f/fishing/sb3/fishing_with_TD3.py,2020-10-14 20:39:29.443190
 TD3,fishing-v1,0.75,0.0,https://github.com/boettiger-lab/conservation-agents/blob/35384ea47a57e98db427726cb55a36b46fa11f6d/fishing/sb3/fishing_with_TD3.py,2020-10-15 04:47:36.476307
+TD3,fishing-v1,7.698808,4.7683716e-07,https://github.com/boettiger-lab/conservation-agents/blob/2e2718a3a464aa41e59031319f353d48862e5236/fishing/sb3/fishing_with_TD3.py,2020-10-15 16:21:13.590387
