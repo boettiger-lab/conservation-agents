@@ -2,9 +2,9 @@ import gym
 import gym_fishing
 from stable_baselines3 import TD3
 from stable_baselines3.common.evaluation import evaluate_policy
-from leaderboard import leaderboard
+import leaderboard
 import os
-url = hash_url(os.path.basename(__file__)) # get hash URL at start of execution
+url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 ENV = "fishing-v2"
 env = gym.make(ENV, C = 0.01)
@@ -19,7 +19,7 @@ env.plot(df, "results/td3.png")
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
 print("mean reward:", mean_reward, "std:", std_reward)
-leaderboard("TD3", ENV, mean_reward, std_reward, url)
+leaderboard.leaderboard("TD3", ENV, mean_reward, std_reward, url)
 
 
 model.save("models/td3")
