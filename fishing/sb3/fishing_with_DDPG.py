@@ -1,13 +1,13 @@
 import gym
 import gym_fishing
 import numpy as np
-from leaderboard import leaderboard
+import leaderboard
 from stable_baselines3 import DDPG
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.evaluation import evaluate_policy
 import os
 
-url = hash_url(os.path.basename(__file__)) # get hash URL at start of execution
+url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 ENV = "fishing-v2"
 env = gym.make(ENV, C = 0.01)
@@ -27,6 +27,6 @@ env.plot(df, "results/ddpg.png")
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10)
 print("mean reward:", mean_reward, "std:", std_reward)
-leaderboard("DDPG", ENV, mean_reward, std_reward, url)
+leaderboard.leaderboard("DDPG", ENV, mean_reward, std_reward, url)
 
 model.save("results/ddpg")
