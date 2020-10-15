@@ -7,15 +7,15 @@ from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckA
 from stable_baselines3.common.evaluation import evaluate_policy
 import os
 
-ENV = "fishing-v1"
-env = gym.make(ENV)
+ENV = "fishing-v2"
+env = gym.make(ENV, C = 0.01)
 
 # The noise objects for DDPG
 n_actions = env.action_space.shape[-1]
 action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions))
 
-model = DDPG('MlpPolicy', env, action_noise=action_noise, verbose=1)
-model.learn(total_timesteps=100000, log_interval=100)
+model = DDPG('MlpPolicy', env, action_noise=action_noise, verbose=0)
+model.learn(total_timesteps=300000, log_interval=100)
 
 
 ## simulate and plot results
