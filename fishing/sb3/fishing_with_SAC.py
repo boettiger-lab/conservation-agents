@@ -7,7 +7,7 @@ import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 
-ENV = "fishing-v3"
+ENV = "fishing-v4"
 env = gym.make(ENV)
 model = SAC('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=200000)
