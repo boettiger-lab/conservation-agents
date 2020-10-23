@@ -1,0 +1,10 @@
+fishing-v1:
+        gamma: 0.999
+        learning_rate: .001
+        batch_size: 2000
+        buffer_size: 1000000
+        learning_starts:  50000
+        train_freq: 16
+        tau: 0.001
+        ent_coef: 0.01
+        policy_kwargs: "dict(log_std_init=.17, net_arch=[64, 64])"
