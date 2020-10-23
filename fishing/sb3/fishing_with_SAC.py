@@ -8,9 +8,13 @@ url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start o
 
 
 ENV = "fishing-v1"
-env = gym.make(ENV, init_state = 0.3)
+env = gym.make(ENV)
 model = SAC('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=200000)
+
+
+## "mini-transfer learning": test with different initial condition
+env = gym.make(ENV, init_state = 0.3)
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)

@@ -20,6 +20,9 @@ model = DDPG('MlpPolicy', env, action_noise=action_noise, verbose=0)
 model.learn(total_timesteps=300000, log_interval=100)
 
 
+## "mini-transfer learning": test with different initial condition
+env = gym.make(ENV, init_state = 0.3)
+
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/ddpg.png")

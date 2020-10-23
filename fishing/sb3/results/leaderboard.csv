@@ -29,3 +29,10 @@ DDPG,fishing-v4,6.65366,1.4263592,https://github.com/boettiger-lab/conservation-
 DDPG,fishing-v4,6.1708984,2.0392988,https://github.com/boettiger-lab/conservation-agents/blob/a0b6e1f63d96e30b1106afa6fdee0d729fae75b3/fishing/sb3/fishing_with_DDPG.py,2020-10-16 18:42:11.244302
 SAC,fishing-v4,5.4817634,1.2597061,https://github.com/boettiger-lab/conservation-agents/blob/be10346afaa3d79bbfdc7f1bb7842a7e1d5fc8f3/fishing/sb3/fishing_with_SAC.py,2020-10-16 18:44:33.765847
 TD3,fishing-v4,0.75,0.0,https://github.com/boettiger-lab/conservation-agents/blob/78370d2b4109a03e905d92331a91ae5db55c3edd/fishing/sb3/fishing_with_TD3.py,2020-10-16 18:47:09.836442
+A2C,fishing-v0,0.75,0.0,https://github.com/boettiger-lab/conservation-agents/blob/821f8485dd8188f721429b7a038970e959676f64/fishing/sb3/fishing_with_A2C.py,2020-10-23 21:36:51.276875
+TD3,fishing-v1,7.2691207,9.536743e-07,https://github.com/boettiger-lab/conservation-agents/blob/eee810de56dea0c44e26a3a6f20cb9f087b4929d/fishing/sb3/fishing_with_TD3.py,2020-10-23 21:48:19.937105
+DDPG,fishing-v1,7.5690627,0.0,https://github.com/boettiger-lab/conservation-agents/blob/d4e959dcf94400017bf07a551d753e3b8acc180b/fishing/sb3/fishing_with_DDPG.py,2020-10-23 21:50:38.818610
+PPO,fishing-v0,7.176000000000005,0.0486621002423858,https://github.com/boettiger-lab/conservation-agents/blob/72fc852d3ae3e6ce56762f374c429a8998dc7fa8/fishing/sb3/fishing_with_PPO.py,2020-10-23 22:14:06.838645
+DDPG,fishing-v1,0.29999999999999993,5.551115123125783e-17,https://github.com/boettiger-lab/conservation-agents/blob/8a71a9bbdb72b708eea1333f9a22c63c7bd17755/fishing/sb3/fishing_with_DDPG.py,2020-10-23 22:23:43.536985
+SAC,fishing-v1,6.8952928,4.7683716e-07,https://github.com/boettiger-lab/conservation-agents/blob/a5fb7c4870072bbaadcd744758c453276204f7b5/fishing/sb3/fishing_with_SAC.py,2020-10-23 22:25:37.474369
+TD3,fishing-v1,0.30000000000000004,5.551115123125783e-17,https://github.com/boettiger-lab/conservation-agents/blob/92b642ef385f461b2ed29c70116caf53d901e100/fishing/sb3/fishing_with_TD3.py,2020-10-23 22:28:06.764025
