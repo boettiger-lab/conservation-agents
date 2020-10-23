@@ -7,7 +7,7 @@ import os
 url = hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 ENV = "fishing-v0"
-env = gym.make(ENV, n_actions = 100)
+env = gym.make(ENV, n_actions = 100, init_state = 0.3)
 model = PPO('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=400000)
 
