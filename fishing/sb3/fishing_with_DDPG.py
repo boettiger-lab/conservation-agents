@@ -10,7 +10,7 @@ import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 ENV = "fishing-v1"
-env = gym.make(ENV, init_state = 0.3)
+env = gym.make(ENV)
 
 # The noise objects for DDPG
 n_actions = env.action_space.shape[-1]
