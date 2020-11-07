@@ -42,3 +42,6 @@ A2C,fishing-v0,7.617800000000009,0.050844468725712924,https://github.com/boettig
 TD3,fishing-v1,5.219881,4.7683716e-07,https://github.com/boettiger-lab/conservation-agents/blob/55649454fe48da94b20e64432ab2f519b5c33f19/fishing/sb3/fishing_with_TD3.py,2020-11-07 04:39:07.815986
 DDPG,fishing-v1,0.29999999999999993,5.551115123125783e-17,https://github.com/boettiger-lab/conservation-agents/blob/b7d2c2793a221082df9fe28e71ceabcb67aecdd0/fishing/sb3/fishing_with_DDPG.py,2020-11-07 04:39:21.062906
 SAC,fishing-v1,7.411998,0.0,https://github.com/boettiger-lab/conservation-agents/blob/cc879cf6ee8e9677977ac755867bc779e5be349e/fishing/sb3/fishing_with_SAC.py,2020-11-07 04:39:53.371718
+DDPG,fishing-v1,6.1816726,4.7683716e-07,https://github.com/boettiger-lab/conservation-agents/blob/cd7ef24a1ca3647a080de45bf9df8baf65956132/fishing/sb3/fishing_with_DDPG.py,2020-11-07 05:41:43.490776
+TD3,fishing-v1,0.75,0.0,https://github.com/boettiger-lab/conservation-agents/blob/2ae5b41a5b1bce60cdf3d1a707667386e81cc401/fishing/sb3/fishing_with_TD3.py,2020-11-07 05:51:57.272340
+TD3,fishing-v1,7.3950257,4.7683716e-07,https://github.com/boettiger-lab/conservation-agents/blob/2ae5b41a5b1bce60cdf3d1a707667386e81cc401/fishing/sb3/fishing_with_TD3.py,2020-11-07 07:10:07.193261
