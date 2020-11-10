@@ -11,4 +11,9 @@ The following are general descriptions of the files found here.
 
 - `callbacks_sb3.py`: This also contains some objects that are used when tuning, but nothing that I have edited from rl-zoo. 
 
-`plot.py`: This creates an .png of an averaged trajectory from an agent over 100 episodes. 
+- `plot.py`: This creates an .png of an averaged trajectory from an agent over 100 episodes. 
+
+- `plot2.py`: This creates a .png that shows state, action and reward dynamics for multiple replicates.
+
+- `train.py`: This is a general training script that allows the user to train an agent with a range of options via command-line arguments. E.g. `python train.py --algo sac --n_timesteps 200000` will train an agent using the hyperparameters found in `hyperparams/sac.yml`. Checkout the script to see other available CL arguments. 
+
