@@ -9,7 +9,7 @@ url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start o
 
 ENV = "fishing-v1"
 env = gym.make(ENV, sigma= 0.05)
-model = SAC('MlpPolicy', env, verbose=1,  tensorboard_log="/var/log/tensorboard/sac")
+model = SAC('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard")
 model.learn(total_timesteps=200000)
 
 
