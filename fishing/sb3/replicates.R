@@ -12,7 +12,8 @@ result_path <- function(prefix, i, dir = "results"){
 }
 
 ## self-contained iterable, for parallel execution
-train <- function(i = 0, 
+train <- function(i = 1, 
+                  seed = i,
                   ENV = "fishing-v1", 
                   algo = "SAC", 
                   steps = 200000L, 
@@ -26,8 +27,8 @@ train <- function(i = 0,
   torch       <- import("torch")
   np          <- import("numpy")
   
-  torch$manual_seed(12345L)
-  np$random$seed(12345L)
+  torch$manual_seed(seed)
+  np$random$seed(seed)
   
   env <- gym$make(ENV, ...)
   init_model <- sb3[[algo]]
