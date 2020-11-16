@@ -9,14 +9,14 @@ import os
 
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
-ENV = "fishing-v1"
+ENV = "fishing-v1" # DDPG can do cts action spaces only
 env = gym.make(ENV)
 
 # The noise objects for DDPG
 n_actions = env.action_space.shape[-1]
 action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions))
 
-model = DDPG('MlpPolicy', env, action_noise=action_noise, verbose=0)
+model = DDPG('MlpPolicy', env, action_noise=action_noise, verbose=0, tensorboard_log="/var/log/tensorboard/benchmark")
 model.learn(total_timesteps=300000, log_interval=100)
 
 
