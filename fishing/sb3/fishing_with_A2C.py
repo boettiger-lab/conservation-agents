@@ -7,10 +7,10 @@ import leaderboard
 import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
-ENV = "fishing-v0"
+ENV = "fishing-v1" # A2C can do discrete & cts
 env = gym.make(ENV, n_actions = 100)
-model = A2C('MlpPolicy', env, verbose=0)
-model.learn(total_timesteps=400000)
+model = A2C('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/benchmark")
+model.learn(total_timesteps=300000)
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
