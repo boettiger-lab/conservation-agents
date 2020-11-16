@@ -6,9 +6,9 @@ import leaderboard
 import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
-ENV = "fishing-v1"
+ENV = "fishing-v1" # TD3 can do continuous action spaces only
 env = gym.make(ENV)
-model = TD3('MlpPolicy', env, verbose=0)
+model = TD3('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/benchmark")
 model.learn(total_timesteps=300000)
 #model.load("models/td3")
 
