@@ -8,12 +8,12 @@ import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 # Create environment
-ENV = "fishing-v0"
+ENV = "fishing-v0" # DQN is discrete-only
 env = gym.make(ENV, n_actions=100)
 # Instantiate the agent
-model = DQN('MlpPolicy', env, verbose=0)
+model = DQN('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/benchmark")
 # Train the agent
-model.learn(total_timesteps=int(1e5))
+model.learn(total_timesteps=int(300000))
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
