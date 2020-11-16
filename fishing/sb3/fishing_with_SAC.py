@@ -7,10 +7,10 @@ import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 
-ENV = "fishing-v0"
+ENV = "fishing-v1"  # Can also do discrete
 env = gym.make(ENV, sigma= 0.05)
-model = SAC('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard")
-model.learn(total_timesteps=200000)
+model = SAC('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/benchmark")
+model.learn(total_timesteps=300000)
 
 
 ## simulate and plot results
