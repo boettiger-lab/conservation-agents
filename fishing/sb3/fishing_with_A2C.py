@@ -9,7 +9,7 @@ url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start o
 
 ENV = "fishing-v1" # A2C can do discrete & cts
 env = gym.make(ENV)
-model = A2C('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/benchmark")
+model = A2C('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/vec", device = "cpu")
 model.learn(total_timesteps=300000)
 
 ## simulate and plot results
@@ -18,9 +18,14 @@ env.plot(df, "results/a2c.png")
 
 
 
-base = gym.make(ENV, init_state = 0.3)
+env2 = gym.make(ENV, init_state = 0.3)
+df = env2.simulate(model, reps=10)
+env2.plot(df, "results/a2c-rebuild.png")
+
+## retrain on new env
+model.learn(total_timesteps=300000, eval_env = env2)
 df = base.simulate(model, reps=10)
-base.plot(df, "results/a2c-rebuild.png")
+env2.plot(df, "results/a2c-rebuild.png")
 
 
 ## Evaluate model
