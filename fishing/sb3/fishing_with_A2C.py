@@ -18,14 +18,14 @@ env.plot(df, "results/a2c.png")
 
 
 
-env2 = gym.make(ENV, init_state = 0.3)
+env2 = gym.make(ENV, r = 0.1)
 df = env2.simulate(model, reps=10)
-env2.plot(df, "results/a2c-rebuild.png")
+env2.plot(df, "results/a2c-transfer.png")
 
 ## retrain on new env
 model.learn(total_timesteps=300000, eval_env = env2)
 df = base.simulate(model, reps=10)
-env2.plot(df, "results/a2c-rebuild.png")
+env2.plot(df, "results/a2c-relearn.png")
 
 
 ## Evaluate model
