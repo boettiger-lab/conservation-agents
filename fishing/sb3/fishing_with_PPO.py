@@ -8,7 +8,7 @@ url = hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 ENV = "fishing-v1" # can do cts or discrete
 env = gym.make(ENV)
-model = PPO('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/benchmark")
+model = PPO('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/vec", device = "cpu")
 model.learn(total_timesteps=300000)
 
 ## simulate and plot results
