@@ -23,8 +23,9 @@ df = env2.simulate(model, reps=10)
 env2.plot(df, "results/a2c-transfer.png")
 
 ## retrain on new env
-model.learn(total_timesteps=300000, eval_env = env2)
-df = base.simulate(model, reps=10)
+model.set_env(env2)
+model.learn(total_timesteps=300000)
+df = env2.simulate(model, reps=10)
 env2.plot(df, "results/a2c-relearn.png")
 
 
