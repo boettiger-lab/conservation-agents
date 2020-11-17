@@ -16,10 +16,16 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/ppo.png")
 
 
-
-base = gym.make(ENV, init_state = 0.3)
+base = gym.make(ENV, r = 0.1)
 df = base.simulate(model, reps=10)
-base.plot(df, "results/ppo-rebuild.png")
+base.plot(df, "results/ppo-transfer.png")
+
+## retrain on new env
+model.learn(total_timesteps=300000, eval_env = env2)
+df = base.simulate(model, reps=10)
+env2.plot(df, "results/ppo-relearn.png")
+
+
 
 ## Evaluate model
 # mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
