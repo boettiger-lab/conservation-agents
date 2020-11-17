@@ -17,9 +17,15 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/a2c.png")
 
 
-## Evaluate model
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-leaderboard.leaderboard("A2C", ENV, mean_reward, std_reward, url)
 
-model.save("models/a2c")
-print("mean reward:", mean_reward, "std:", std_reward)
+base = gym.make(ENV, init_state = 0.3)
+df = base.simulate(model, reps=10)
+base.plot(df, "results/a2c-rebuild.png")
+
+
+## Evaluate model
+#mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
+#leaderboard.leaderboard("A2C", ENV, mean_reward, std_reward, url)
+
+#model.save("models/a2c")
+#print("mean reward:", mean_reward, "std:", std_reward)
