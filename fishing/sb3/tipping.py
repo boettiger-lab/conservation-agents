@@ -8,7 +8,7 @@ import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
 
 ENV = "fishing-v2" # A2C can do discrete & cts
-env = gym.make(ENV, C = 0.1)
+env = gym.make(ENV, C = 0.2)
 model = A2C('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/vec", device = "cpu")
 model.learn(total_timesteps=300000)
 
