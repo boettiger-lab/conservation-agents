@@ -16,13 +16,14 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/ppo.png")
 
 
-base = gym.make(ENV, r = 0.1)
-df = base.simulate(model, reps=10)
-base.plot(df, "results/ppo-transfer.png")
+env2 = gym.make(ENV, r = 0.1)
+df = env2.simulate(model, reps=10)
+env2.plot(df, "results/ppo-transfer.png")
 
 ## retrain on new env
-model.learn(total_timesteps=300000, eval_env = env2)
-df = base.simulate(model, reps=10)
+model.set_env(env2)
+model.learn(total_timesteps=300000)
+df = env2.simulate(model, reps=10)
 env2.plot(df, "results/ppo-relearn.png")
 
 
