@@ -25,7 +25,7 @@ model = SAC('MlpPolicy',
             env, verbose=0, 
             use_sde=True,
             gamma = hyper['gamma'],
-            lr = hyper['lr'],
+            learning_rate = hyper['lr'],
             batch_size = hyper['batch_size'],            
             buffer_size = hyper['buffer_size'],
             learning_starts = hyper['learning_starts'],
@@ -38,7 +38,7 @@ model.learn(total_timesteps=300000)
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
-env.plot(df, "results/sac.png")
+env.plot(df, "results/sac-tuned.png")
 
 
 ## Evaluate model
@@ -47,4 +47,3 @@ print("mean reward:", mean_reward, "std:", std_reward)
 leaderboard.leaderboard("SAC", ENV, mean_reward, std_reward, url)
 
 
-model.save("models/SAC")
