@@ -9,29 +9,16 @@ url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start o
 
 ENV = "fishing-v1" # A2C can do discrete & cts
 env = gym.make(ENV)
-model = A2C('MlpPolicy', env, verbose=0, tensorboard_log="/var/log/tensorboard/vec", device = "cpu")
+model = A2C('MlpPolicy', env, verbose=0, use_sde = True, tensorboard_log="/var/log/tensorboard/benchmark")
 model.learn(total_timesteps=300000)
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/a2c.png")
 
-
-
-env2 = gym.make(ENV, r = 0.1)
-df = env2.simulate(model, reps=10)
-env2.plot(df, "results/a2c-transfer.png")
-
-## retrain on new env
-model.set_env(env2)
-model.learn(total_timesteps=300000)
-df = env2.simulate(model, reps=10)
-env2.plot(df, "results/a2c-relearn.png")
-
-
 ## Evaluate model
-#mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-#leaderboard.leaderboard("A2C", ENV, mean_reward, std_reward, url)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
+leaderboard.leaderboard("A2C", ENV, mean_reward, std_reward, url)
 
-#model.save("models/a2c")
-#print("mean reward:", mean_reward, "std:", std_reward)
+model.save("models/a2c")
+print("mean reward:", mean_reward, "std:", std_reward)
