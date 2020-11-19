@@ -15,6 +15,7 @@ model.learn(total_timesteps=300000)
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/a2c.png")
+env.policyfn(df, "results/a2c-policy.png")
 
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
