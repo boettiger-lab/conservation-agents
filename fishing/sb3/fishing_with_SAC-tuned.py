@@ -15,7 +15,7 @@ env = gym.make(ENV)
 #action_noise=None, optimize_memory_usage=False, ent_coef='auto', target_update_interval=1, target_entropy='auto', use_sde=False, sde_sample_freq=- 1, use_sde_at_warmup=False, 
 #tensorboard_log=None, create_eval_env=False, policy_kwargs=None, verbose=0, seed=None, device='auto', _init_setup_model=True)
 
-hyper = {'gamma': 0.95, 
+hyper = {'gamma': 0.99, 
          'lr': 1.8825727360507924e-05, 
          'batch_size': 512, 
          'buffer_size': 10000, 
