@@ -26,7 +26,6 @@ NeckEnvRelative-v2:
   sde_sample_freq: 64
   policy_kwargs: "dict(log_std_init=-2, net_arch=[256, 256])"
 
-# Tuned
 fishing-v1:
   # env_wrapper: utils.wrappers.PlotActionWrapper
   n_timesteps: !!float 50000
