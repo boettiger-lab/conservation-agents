@@ -5,17 +5,22 @@ from stable_baselines3.common.evaluation import evaluate_policy
 import leaderboard
 import os
 url = leaderboard.hash_url(os.path.basename(__file__)) # get hash URL at start of execution
-
+import pandas as pd
 
 ENV = "fishing-v1"  # Can also do discrete
 env = gym.make(ENV)
+
+# SAC defaults:
+#learning_rate=0.0003, buffer_size=1000000, learning_starts=100, batch_size=256, tau=0.005, gamma=0.99, train_freq=1, gradient_steps=1, n_episodes_rollout=- 1, 
+#action_noise=None, optimize_memory_usage=False, ent_coef='auto', target_update_interval=1, target_entropy='auto', use_sde=False, sde_sample_freq=- 1, use_sde_at_warmup=False, 
+#tensorboard_log=None, create_eval_env=False, policy_kwargs=None, verbose=0, seed=None, device='auto', _init_setup_model=True)
 
 hyper = {'gamma': 0.95, 
          'lr': 1.8825727360507924e-05, 
          'batch_size': 512, 
          'buffer_size': 10000, 
          'learning_starts': 10000, 
-         'train_freq': 256, 
+         'train_freq': 1, 
          'tau': 0.005, 
          'log_std_init': -0.3072998266889968, 
          'net_arch': 'medium'}
