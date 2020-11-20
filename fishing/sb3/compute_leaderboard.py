@@ -20,6 +20,7 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/escapement.png")
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=1000)
 leaderboard("ESC", ENV, mean_reward, std_reward, url)
+print("algo:", "ESC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 ## MSY ######################################################################
 model = msy(env)
@@ -27,6 +28,7 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/msy.png")
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=1000)
 leaderboard("MSY", ENV, mean_reward, std_reward, url)
+print("algo:", "MSY", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 
 # Consider running these in parallel?
@@ -40,7 +42,7 @@ model = PPO('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("PPO", ENV, mean_reward, std_reward, url)
-print( algo: "PPO", "env": ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "PPO", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
@@ -58,7 +60,7 @@ model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("A2C", ENV, mean_reward, std_reward, url)
-print( algo: "A2C", "env": ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
@@ -75,7 +77,7 @@ model = DDPG('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("DDPG", ENV, mean_reward, std_reward, url)
-print( algo: "DDPG", "env": ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "DDPG", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 
 ## simulate and plot results for reference
@@ -115,7 +117,7 @@ model.learn(total_timesteps=300000)
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard.leaderboard("SAC", ENV, mean_reward, std_reward, url)
-print( algo: "SAC", "env": ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 
 ## simulate and plot results
@@ -131,7 +133,7 @@ model = TD3('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("TD3", ENV, mean_reward, std_reward, url)
-print( algo: "TD3", "env": ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "TD3", "env:",ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
