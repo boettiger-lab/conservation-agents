@@ -48,8 +48,8 @@ print("algo:", "PPO", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/ppo.png")
-policy = env.policyfn(model, reps=10)
-env.plot(policy, "results/ppo-policy.png")
+#policy = env.policyfn(model, reps=10)
+#env.plot(policy, "results/ppo-policy.png")
 
 
 ## A2C ######################################################################
@@ -66,8 +66,8 @@ print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
 env.plot(df, "results/a2c.png")
-policy = env.policyfn(model, reps=10)
-env.plot(policy, "results/a2c-policy.png")
+#policy = env.policyfn(model, reps=10)
+#env.plot(policy, "results/a2c-policy.png")
 
 
 ## DDPG ######################################################################
@@ -84,8 +84,8 @@ print("algo:", "DDPG", "env:", ENV, "mean reward:", mean_reward, "std:", std_rew
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
 env.plot(df, "results/ddpg.png")
-policy = env.policyfn(model, reps=10)
-env.plot(policy, "results/ddpg-policy.png")
+#policy = env.policyfn(model, reps=10)
+#env.plot(policy, "results/ddpg-policy.png")
 
 ## SAC #######################################################################
 
@@ -123,7 +123,9 @@ print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 
 ## simulate and plot results
 df = env.simulate(model, reps=10)
-env.plot(df, "results/sac-tuned.png")
+env.plot(df, "results/sac.png")
+#policy = env.policyfn(model, reps=10)
+#env.plot(policy, "results/sac-policy.png")
 
 
 ## TD3 ######################################################################
@@ -139,6 +141,6 @@ print("algo:", "TD3", "env:",ENV, "mean reward:", mean_reward, "std:", std_rewar
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/td3.png")
-policy = env.policyfn(model, reps=10)
-env.plot(policy, "results/td3-policy.png")
+#policy = env.policyfn(model, reps=10)
+#env.plot(policy, "results/td3-policy.png")
 
