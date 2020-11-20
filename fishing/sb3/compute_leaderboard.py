@@ -8,7 +8,7 @@ import os
 
 #file = os.path.basename(__file__)
 file = "compute_leaderboard.py"
-url = hash_url() # get hash URL at start of execution
+url = hash_url(file) # get hash URL at start of execution
 tensorboard_log="/var/log/tensorboard/leaderboard"
 
 
@@ -137,19 +137,17 @@ env.plot(df, "results/sac.png")
 hyper = {'gamma': 0.95, 'lr': 0.001737794384065678, 'batch_size': 256, 'buffer_size': 1000000, 'episodic': True, 'noise_type': None, 'noise_std': 0.260511264163344, 'net_arch': 'medium'}
 policy_kwargs = dict(net_arch=[256, 256])
 
-model = SAC('MlpPolicy', 
-            env, verbose=0, 
-            use_sde=True,
+model = TD3('MlpPolicy', 
+            env, 
+            verbose=0, 
             gamma = hyper['gamma'],
             learning_rate = hyper['lr'],
             batch_size = hyper['batch_size'],            
             buffer_size = hyper['buffer_size'],
-            episodic = hyper['episodic'],
             noise_type = hyper['noise_type'],
             noise_std = hyper['noise_std'],
             policy_kwargs=policy_kwargs,
             tensorboard_log=tensorboard_log)
-model = TD3('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("TD3", ENV, mean_reward, std_reward, url)
