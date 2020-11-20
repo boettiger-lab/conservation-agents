@@ -6,8 +6,9 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard, hash_url
 import os
 
-
-url = hash_url(os.path.basename(__file__)) # get hash URL at start of execution
+#file = os.path.basename(__file__)
+file = "compute_leaderboard.py"
+url = hash_url() # get hash URL at start of execution
 tensorboard_log="/var/log/tensorboard/leaderboard"
 
 
@@ -130,8 +131,24 @@ env.plot(df, "results/sac.png")
 
 ## TD3 ######################################################################
 
-# load best tuned parameters...
+# load best tuned parameters... # FIXME read from csv?
 
+# [I 2020-11-20 19:27:53,592] Trial 2 finished with value: 8.015005111694336 and parameters: 
+hyper = {'gamma': 0.95, 'lr': 0.001737794384065678, 'batch_size': 256, 'buffer_size': 1000000, 'episodic': True, 'noise_type': None, 'noise_std': 0.260511264163344, 'net_arch': 'medium'}
+policy_kwargs = dict(net_arch=[256, 256])
+
+model = SAC('MlpPolicy', 
+            env, verbose=0, 
+            use_sde=True,
+            gamma = hyper['gamma'],
+            learning_rate = hyper['lr'],
+            batch_size = hyper['batch_size'],            
+            buffer_size = hyper['buffer_size'],
+            episodic = hyper['episodic'],
+            noise_type = hyper['noise_type'],
+            noise_std = hyper['noise_std'],
+            policy_kwargs=policy_kwargs,
+            tensorboard_log=tensorboard_log)
 model = TD3('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
