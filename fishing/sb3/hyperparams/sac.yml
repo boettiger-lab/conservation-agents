@@ -14,5 +14,6 @@ fishing-v1:
   tau: 0.01
   learning_starts: 0
   use_sde: True
+  optimize_memory_usage: True
   policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"
   
