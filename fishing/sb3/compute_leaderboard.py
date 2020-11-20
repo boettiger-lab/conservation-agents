@@ -1,6 +1,7 @@
 import gym
 import gym_fishing
 from gym_fishing.models.policies import msy, escapement
+from stable_baselines3 import SAC, TD3, A2C, PPO, DDPG, DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard, hash_url
 import os
