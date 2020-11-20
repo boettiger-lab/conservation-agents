@@ -1,6 +1,6 @@
 import gym
 import gym_fishing
-from stable_baselines3 import PPO
+from gym_fishing.models.policies import msy, escapement
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard, hash_url
 import os
