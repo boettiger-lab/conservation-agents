@@ -117,7 +117,7 @@ model.learn(total_timesteps=300000)
 
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-leaderboard.leaderboard("SAC", ENV, mean_reward, std_reward, url)
+leaderboard("SAC", ENV, mean_reward, std_reward, url)
 print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 
