@@ -1,4 +1,8 @@
 agent,env,mean,std,url,date
-ESC,fishing-v1,7.8119846475124355,0.5130177437699148,https://github.com/boettiger-lab/conservation-agents/blob/d3ebb2d26b32ee42ad2987e137e5472b02cf5876/fishing/sb3/fishing_optimaly.py,2020-11-20 17:29:27.430040
-ESC,fishing-v1,7.761564231872558,0.47941593004312166,https://github.com/boettiger-lab/conservation-agents/blob/d3ebb2d26b32ee42ad2987e137e5472b02cf5876/fishing/sb3/fishing_optimaly.py,2020-11-20 17:31:58.394415
-MSY,fishing-v1,4.405760414705878,2.0169112892425187,https://github.com/boettiger-lab/conservation-agents/blob/d3ebb2d26b32ee42ad2987e137e5472b02cf5876/fishing/sb3/fishing_optimaly.py,2020-11-20 17:32:39.943122
+ESC,fishing-v1,7.752803234040737,0.5217880013673076,https://github.com/boettiger-lab/conservation-agents/blob/03e693ea910e58d4555aa238fa5a3f477829a6be/fishing/sb3/compute_leaderboard.py,2020-11-20 17:57:56.133307
+MSY,fishing-v1,4.413756344021471,1.966552393646862,https://github.com/boettiger-lab/conservation-agents/blob/03e693ea910e58d4555aa238fa5a3f477829a6be/fishing/sb3/compute_leaderboard.py,2020-11-20 17:57:57.931222
+ESC,fishing-v1,7.741833909332752,0.4968671693927926,https://github.com/boettiger-lab/conservation-agents/blob/ed3c80bce87afc144d1554ea0e815c4307a4a11b/fishing/sb3/compute_leaderboard.py,2020-11-20 17:58:49.875349
+MSY,fishing-v1,4.504812564001205,1.9873265892962093,https://github.com/boettiger-lab/conservation-agents/blob/ed3c80bce87afc144d1554ea0e815c4307a4a11b/fishing/sb3/compute_leaderboard.py,2020-11-20 17:58:51.503732
+PPO,fishing-v1,6.14057013630867,0.6330986393779175,https://github.com/boettiger-lab/conservation-agents/blob/ed3c80bce87afc144d1554ea0e815c4307a4a11b/fishing/sb3/compute_leaderboard.py,2020-11-20 18:10:51.203239
+ESC,fishing-v1,7.752693843781948,0.5090557662788661,https://github.com/boettiger-lab/conservation-agents/blob/6f4ea97b6c444b0d376c4e3abc6d620a6fa6513f/fishing/sb3/compute_leaderboard.py,2020-11-20 18:20:49.921051
+MSY,fishing-v1,4.4378170443516645,2.0088051826433597,https://github.com/boettiger-lab/conservation-agents/blob/6f4ea97b6c444b0d376c4e3abc6d620a6fa6513f/fishing/sb3/compute_leaderboard.py,2020-11-20 18:20:51.541001
