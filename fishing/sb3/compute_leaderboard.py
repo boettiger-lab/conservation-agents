@@ -40,7 +40,7 @@ print("algo:", "MSY", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 
 # load best tuned parameters...
 
-model = PPO('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
+model = PPO('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log, driver="cpu")
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("PPO", ENV, mean_reward, std_reward, url)
@@ -58,7 +58,7 @@ env.plot(df, "results/ppo.png")
 # FIXME load best tuned parameters first...
 # Trial 328 finished with value: 8.025644302368164 and parameters: {'gamma': 0.98, 'normalize_advantage': False, 'max_grad_norm': 0.3, 'use_rms_prop': True, 'gae_lambda': 0.98, 'n_steps': 16, 'lr_schedule': 'linear', 'lr': 0.03490204662520112, 'ent_coef': 0.00026525398345043097, 'vf_coef': 0.18060066335808234, 'log_std_init': -1.1353269076856574, 'ortho_init': True, 'net_arch': 'medium', 'activation_fn': 'relu'}. 
 
-model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
+model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log, driver="cpu")
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("A2C", ENV, mean_reward, std_reward, url)
@@ -75,7 +75,7 @@ env.plot(df, "results/a2c.png")
 
 # FIXME load best tuned parameters first...
 
-model = DDPG('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
+model = DDPG('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log, driver="cpu")
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("DDPG", ENV, mean_reward, std_reward, url)
@@ -113,7 +113,7 @@ model = SAC('MlpPolicy',
             train_freq = hyper['train_freq'],
             tau = hyper['tau'],
             policy_kwargs=policy_kwargs,
-            tensorboard_log=tensorboard_log)
+            tensorboard_log=tensorboard_log, driver="cpu")
 model.learn(total_timesteps=300000)
 
 ## Evaluate model
@@ -147,7 +147,7 @@ model = TD3('MlpPolicy',
             noise_type = hyper['noise_type'],
             noise_std = hyper['noise_std'],
             policy_kwargs=policy_kwargs,
-            tensorboard_log=tensorboard_log)
+            tensorboard_log=tensorboard_log, driver="cpu")
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("TD3", ENV, mean_reward, std_reward, url)
