@@ -1,0 +1,11 @@
+!!python/object/apply:collections.OrderedDict
+- - - n_envs
+    - 4
+  - - n_steps
+    - 300000
+  - - n_timesteps
+    - 300000.0
+  - - policy
+    - MlpPolicy
+  - - use_sde
+    - true

@@ -1,0 +1,3 @@
+,number,value,datetime_start,datetime_complete,duration,params_batch_size,params_buffer_size,params_gamma,params_learning_starts,params_log_std_init,params_lr,params_net_arch,params_tau,params_train_freq,state
+0,0,6.620649814605713,2020-11-20 20:44:36.473975,2020-11-20 22:19:28.529507,0 days 01:34:52.055532,16,100000,0.95,10000,-3.614474072239185,0.0002779767179479973,small,0.02,8,COMPLETE
+1,1,3.0959649085998535,2020-11-20 20:44:36.475096,2020-11-20 22:25:04.751973,0 days 01:40:28.276877,256,100000,0.95,10000,0.6096932840221685,3.097817038160664e-05,big,0.001,64,COMPLETE

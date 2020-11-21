@@ -56,29 +56,30 @@ env.plot(df, "results/ppo.png")
 
 ## A2C ######################################################################
 
-# FIXME load best tuned parameters first...
+# 
 # Trial 328 finished with value: 8.025644302368164 and parameters: 
-hyper = {'gamma': 0.98, 'normalize_advantage': False, 'max_grad_norm': 0.3, 'use_rms_prop': True, 'gae_lambda': 0.98, 'n_steps': 16,
-         'lr_schedule': 'linear', 'lr': 0.03490204662520112, 
-         'ent_coef': 0.00026525398345043097, 'vf_coef': 0.18060066335808234, 
-         'log_std_init': -1.1353269076856574, 'ortho_init': True, 'net_arch': 'medium', 'activation_fn': 'relu'}.
-policy_kwargs = dict(log_std_init=hyper["log_std_init"],
-                     ortho_init = hyper["ortho_init"],
-                     activation_fn = nn.ReLU,
-                     net_arch=[256, 256])
+#hyper = {'gamma': 0.98, 'normalize_advantage': False, 'max_grad_norm': 0.3, 'use_rms_prop': True, 'gae_lambda': 0.98, 'n_steps': 16,
+#         'lr_schedule': 'linear', 'lr': 0.03490204662520112, 
+#         'ent_coef': 0.00026525398345043097, 'vf_coef': 0.18060066335808234, 
+#         'log_std_init': -1.1353269076856574, 'ortho_init': True, 'net_arch': 'medium', 'activation_fn': 'relu'}
+#policy_kwargs = dict(log_std_init=hyper["log_std_init"],
+#                     ortho_init = hyper["ortho_init"],
+#                     activation_fn = nn.ReLU,
+#                     net_arch=[256, 256])
 
 model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log,
-            gamma = hyper["gamma"],
-            learning_rate = hyper["lr"],
-            normalize_advantage = hyper["normalize_advantage"],
-            gae_lambda = hyper["gae_lambda"],
-            n_steps = hyper["n_steps"],
-            ent_coef = hyper["ent_coef"],
-            vf_coef = hyper["vf_coef"],
-            
-            policy_kwargs = policy_kwargs
+#            gamma = hyper["gamma"],
+#            learning_rate = hyper["lr"],
+#            normalize_advantage = hyper["normalize_advantage"],
+#            gae_lambda = hyper["gae_lambda"],
+#            n_steps = hyper["n_steps"],
+#            ent_coef = hyper["ent_coef"],
+#            vf_coef = hyper["vf_coef"],
+#            policy_kwargs = policy_kwargs
             )
+            
 model.learn(total_timesteps=300000)
+
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 leaderboard("A2C", ENV, mean_reward, std_reward, url)
 print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
