@@ -11,42 +11,8 @@ file = os.path.basename(__file__)
 url = hash_url(file) # get hash URL at start of execution
 tensorboard_log="/var/log/tensorboard/multi-env"
 
-
-ENV = "fishing-v1"    
-env = gym.make(ENV)
+env = gym.make("fishing-v1")
 model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
-model.set_env(env)
-
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-ENV = "fishing-v1"    
-env = gym.make(ENV, r = 0.1)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-ENV = "fishing-v1"    
-env = gym.make(ENV)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-
-
-ENV = "fishing-v1"    
-env = gym.make(ENV, r = 0.1)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
 
 
 ENV = "fishing-v2"    
@@ -71,6 +37,44 @@ model.set_env(env)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+
+
+ENV = "fishing-v1"    
+env = gym.make(ENV)
+model.set_env(env)
+
+model.learn(total_timesteps=300000)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+
+
+ENV = "fishing-v1"    
+env = gym.make(ENV, r = 0.1)
+model.set_env(env)
+model.learn(total_timesteps=300000)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+
+
+ENV = "fishing-v1"    
+env = gym.make(ENV)
+model.set_env(env)
+model.learn(total_timesteps=300000)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+
+
+
+
+ENV = "fishing-v1"    
+env = gym.make(ENV, r = 0.1)
+model.set_env(env)
+model.learn(total_timesteps=300000)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+
+
+
 
 
 
