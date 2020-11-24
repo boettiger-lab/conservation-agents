@@ -6,6 +6,11 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard, hash_url
 import os
 
+
+import numpy as np
+from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
+from torch import nn as nn
+
 file = os.path.basename(__file__)
 #file = "multi_env.py"
 url = hash_url(file) # get hash URL at start of execution
