@@ -1,7 +1,7 @@
 import gym
 import gym_fishing
 from gym_fishing.models.policies import msy, escapement
-from stable_baselines3 import SAC, TD3, A2C, PPO, DDPG, DQN
+from stable_baselines3 import SAC, TD3, SAC, PPO, DDPG, DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard, hash_url
 import os
@@ -45,15 +45,21 @@ env = gym.make(ENV, C = 0.2)
 model.set_env(env)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
+## simulate and plot results for reference
+df = env.simulate(model, reps=10)
+env.plot(df, "results/sac-v2-c02.png")
 
 ENV = "fishing-v2"    
 env = gym.make(ENV, C = 0.4)
 model.set_env(env)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+## simulate and plot results for reference
+df = env.simulate(model, reps=10)
+env.plot(df, "results/sac-v2-c04.png")
 
 
 ENV = "fishing-v2"    
@@ -61,7 +67,10 @@ env = gym.make(ENV, C = 0.1, sigma = 0.1)
 model.set_env(env)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+## simulate and plot results for reference
+df = env.simulate(model, reps=10)
+env.plot(df, "results/sac-v2-c01-s01.png")
 
 
 ENV = "fishing-v1"    
@@ -70,7 +79,10 @@ model.set_env(env)
 
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+## simulate and plot results for reference
+df = env.simulate(model, reps=10)
+env.plot(df, "results/sac-v1.png")
 
 
 ENV = "fishing-v1"    
@@ -78,7 +90,10 @@ env = gym.make(ENV, r = 0.1)
 model.set_env(env)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+## simulate and plot results for reference
+df = env.simulate(model, reps=10)
+env.plot(df, "results/sac-v1-r01.png")
 
 
 ENV = "fishing-v1"    
@@ -86,7 +101,10 @@ env = gym.make(ENV)
 model.set_env(env)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+## simulate and plot results for reference
+df = env.simulate(model, reps=10)
+env.plot(df, "results/sac-v1b.png")
 
 
 
@@ -96,20 +114,12 @@ env = gym.make(ENV, r = 0.1)
 model.set_env(env)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-
-
-
-
-
-
+print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
-env.plot(df, "results/a2c-multi.png")
-#policy = env.policyfn(model, reps=10)
-#env.plot(policy, "results/a2c-policy.png")
+env.plot(df, "results/sac-v1-r01b.png")
 
-model.save("results/a2c-multi")
+
+
+model.save("results/sac-env")
