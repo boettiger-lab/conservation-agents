@@ -87,14 +87,14 @@ policy_kwargs = dict(log_std_init=hyper["log_std_init"],
                      net_arch=[256, 256])
 
 model = A2C('MlpPolicy', vec_env, verbose=0, tensorboard_log=tensorboard_log, seed = seed,
-            gamma = hyper["gamma"],
-            learning_rate = hyper["lr"],
-            normalize_advantage = hyper["normalize_advantage"],
-            gae_lambda = hyper["gae_lambda"],
-            n_steps = hyper["n_steps"],
-            ent_coef = hyper["ent_coef"],
-            vf_coef = hyper["vf_coef"],
-            policy_kwargs = policy_kwargs
+#            gamma = hyper["gamma"],
+#            learning_rate = hyper["lr"],
+#            normalize_advantage = hyper["normalize_advantage"],
+#            gae_lambda = hyper["gae_lambda"],
+#            n_steps = hyper["n_steps"],
+#            ent_coef = hyper["ent_coef"],
+#            vf_coef = hyper["vf_coef"],
+#            policy_kwargs = policy_kwargs
             )
             
 model.learn(total_timesteps=300000)
