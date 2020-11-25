@@ -43,10 +43,16 @@ print("algo:", "MSY", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## PPO ######################################################################
 
 # load best tuned parameters...
+# ought to be vectorized!
 
 model = PPO('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+# Rescale score against optimum solution in this environment
+opt = escapement(env)
+opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
+
 leaderboard("PPO", ENV, mean_reward, std_reward, url)
 print("algo:", "PPO", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
@@ -59,7 +65,7 @@ env.plot(df, "results/ppo.png")
 
 ## A2C ######################################################################
 
-# 
+# ought to be vectorized!
 # Trial 328 finished with value: 8.025644302368164 and parameters: 
 hyper = {'gamma': 0.98, 'normalize_advantage': False, 'max_grad_norm': 0.3,
          'use_rms_prop': True, 'gae_lambda': 0.98, 'n_steps': 16,
@@ -85,6 +91,10 @@ model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log,
 model.learn(total_timesteps=300000)
 
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+# Rescale score against optimum solution in this environment
+opt = escapement(env)
+opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
 leaderboard("A2C", ENV, mean_reward, std_reward, url)
 print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
@@ -137,6 +147,10 @@ model = DDPG('MlpPolicy',
 model = DDPG('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+# Rescale score against optimum solution in this environment
+opt = escapement(env)
+opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
 leaderboard("DDPG", ENV, mean_reward, std_reward, url)
 print("algo:", "DDPG", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
@@ -177,6 +191,10 @@ model.learn(total_timesteps=300000)
 
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+# Rescale score against optimum solution in this environment
+opt = escapement(env)
+opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
 leaderboard("SAC", ENV, mean_reward, std_reward, url)
 print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
@@ -197,6 +215,9 @@ hyper = {'gamma': 0.95, 'lr': 0.001737794384065678, 'batch_size': 256,
          'buffer_size': 1000000, 'episodic': True, 'noise_type': None, 
          'noise_std': 0.260511264163344, 'net_arch': 'medium'}
 policy_kwargs = dict(net_arch=[256, 256])
+
+# [I 2020-11-24 18:03:25,390] Trial 29 finished with value: 7.736424446105957 and parameters: 
+# {'gamma': 0.99, 'lr': 3.550974876596194e-05, 'batch_size': 64, 'buffer_size': 100000, 'episodic': False, 'train_freq': 128, 'noise_type': 'ornstein-uhlenbeck', 'noise_std': 0.6615816256241758, 'net_arch': 'small'}. Best is trial 29 with value: 7.736424446105957.
 
 #Trial 15 finished with value: 7.6994757652282715 and parameters: 
 hyper = {'gamma': 0.995, 'lr': 0.0001355522450968401, 'batch_size': 128, 
@@ -241,6 +262,10 @@ model = TD3('MlpPolicy',
             tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+# Rescale score against optimum solution in this environment
+opt = escapement(env)
+opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
 leaderboard("TD3", ENV, mean_reward, std_reward, url)
 print("algo:", "TD3", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
