@@ -15,9 +15,11 @@ file = "compute_leaderboard.py"
 url = hash_url(file) # get hash URL at start of execution
 tensorboard_log="/var/log/tensorboard/leaderboard"
 
+seed = 0
 
 ENV = "fishing-v1"    
 env = gym.make(ENV)
+vec_env = make_vec_env(ENV, n_envs=4, seed=seed) # parallel workers for PPO, A2C
 
 
 ## Constant Escapement ######################################################
@@ -25,6 +27,10 @@ model = escapement(env)
 df = env.simulate(model, reps=10)
 env.plot(df, "results/escapement.png")
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=1000)
+# Rescale score against optimum solution in this environment (err... identical in this case)
+opt = escapement(env)
+opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward 
 leaderboard("ESC", ENV, mean_reward, std_reward, url)
 print("algo:", "ESC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
@@ -33,6 +39,10 @@ model = msy(env)
 df = env.simulate(model, reps=10)
 env.plot(df, "results/msy.png")
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=1000)
+# Rescale score against optimum solution in this environment
+opt = escapement(env)
+opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward 
 leaderboard("MSY", ENV, mean_reward, std_reward, url)
 print("algo:", "MSY", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
@@ -43,9 +53,7 @@ print("algo:", "MSY", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## PPO ######################################################################
 
 # load best tuned parameters...
-# ought to be vectorized!
-
-model = PPO('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
+model = PPO('MlpPolicy', vec_env, verbose=0, tensorboard_log=tensorboard_log, seed = seed)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 # Rescale score against optimum solution in this environment
@@ -77,7 +85,7 @@ policy_kwargs = dict(log_std_init=hyper["log_std_init"],
                      activation_fn = nn.ReLU,
                      net_arch=[256, 256])
 
-model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log,
+model = A2C('MlpPolicy', vec_env, verbose=0, tensorboard_log=tensorboard_log, seed = seed,
             gamma = hyper["gamma"],
             learning_rate = hyper["lr"],
             normalize_advantage = hyper["normalize_advantage"],
@@ -131,9 +139,7 @@ elif noise_type == "ornstein-uhlenbeck":
         mean=np.zeros(n_actions), sigma= hyper['noise_std'] * np.ones(n_actions)
     )
 
-model = DDPG('MlpPolicy', 
-            env, 
-            verbose=0, 
+model = DDPG('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log, seed = seed,
             gamma = hyper['gamma'],
             learning_rate = hyper['lr'],
             batch_size = hyper['batch_size'],            
@@ -142,8 +148,7 @@ model = DDPG('MlpPolicy',
             train_freq = hyper['train_freq'],
             gradient_steps = hyper['train_freq'],
             n_episodes_rollout = hyper['n_episodes_rollout'],
-            policy_kwargs=policy_kwargs,
-            tensorboard_log=tensorboard_log)
+            policy_kwargs=policy_kwargs)
 model = DDPG('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
@@ -176,7 +181,7 @@ hyper = {'gamma': 0.99,
 policy_kwargs = dict(log_std_init=hyper["log_std_init"], net_arch=[256, 256])
 
 model = SAC('MlpPolicy', 
-            env, verbose=0, 
+            env, verbose=0, tensorboard_log=tensorboard_log, seed = seed,
             use_sde=True,
             gamma = hyper['gamma'],
             learning_rate = hyper['lr'],
@@ -185,8 +190,7 @@ model = SAC('MlpPolicy',
             learning_starts = hyper['learning_starts'],
             train_freq = hyper['train_freq'],
             tau = hyper['tau'],
-            policy_kwargs=policy_kwargs,
-            tensorboard_log=tensorboard_log)
+            policy_kwargs=policy_kwargs)
 model.learn(total_timesteps=300000)
 
 ## Evaluate model
@@ -247,9 +251,7 @@ elif noise_type == "ornstein-uhlenbeck":
         mean=np.zeros(n_actions), sigma= hyper['noise_std'] * np.ones(n_actions)
     )
 
-model = TD3('MlpPolicy', 
-            env, 
-            verbose=0, 
+model = TD3('MlpPolicy', env,  verbose=0, tensorboard_log=tensorboard_log, seed = seed,
             gamma = hyper['gamma'],
             learning_rate = hyper['lr'],
             batch_size = hyper['batch_size'],            
@@ -258,8 +260,7 @@ model = TD3('MlpPolicy',
             train_freq = hyper['train_freq'],
             gradient_steps = hyper['train_freq'],
             n_episodes_rollout = hyper['n_episodes_rollout'],
-            policy_kwargs=policy_kwargs,
-            tensorboard_log=tensorboard_log)
+            policy_kwargs=policy_kwargs)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 # Rescale score against optimum solution in this environment
