@@ -15,76 +15,47 @@ env = gym.make("fishing-v1")
 model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log)
 
 
-ENV = "fishing-v2"    
-env = gym.make(ENV, C = 0.4)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
 
 ENV = "fishing-v2"    
 env = gym.make(ENV, C = 0.2)
 model.set_env(env)
-model.learn(total_timesteps=300000)
+model.learn(total_timesteps=500000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-ENV = "fishing-v2"    
-env = gym.make(ENV, C = 0.1, sigma = 0.1)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-ENV = "fishing-v1"    
-env = gym.make(ENV)
-model.set_env(env)
-
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-ENV = "fishing-v1"    
-env = gym.make(ENV, r = 0.1)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-ENV = "fishing-v1"    
-env = gym.make(ENV)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-
-
-ENV = "fishing-v1"    
-env = gym.make(ENV, r = 0.1)
-model.set_env(env)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-
-
-
-
-
-
-
-
+print("algo:", "A2C2", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
-env.plot(df, "results/a2c-multi.png")
-#policy = env.policyfn(model, reps=10)
-#env.plot(policy, "results/a2c-policy.png")
+env.plot(df, "results/serial-eval1.png")
 
-model.save("results/a2c-multi")
+ENV = "fishing-v2"    
+env = gym.make(ENV, C = 0.1)
+model.set_env(env)
+model.learn(total_timesteps=500000)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+df = env.simulate(model, reps=10)
+env.plot(df, "results/serial-eval2.png")
+
+
+ENV = "fishing-v1"    
+env = gym.make(ENV)
+model.set_env(env)
+model.learn(total_timesteps=500000)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+df = env.simulate(model, reps=10)
+env.plot(df, "results/serial-eval3.png")
+
+ENV = "fishing-v1"    
+env = gym.make(ENV, r = 0.1)
+model.set_env(env)
+model.learn(total_timesteps=500000)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+df = env.simulate(model, reps=10)
+env.plot(df, "results/serial-eval4.png")
+
+
+
+
+
+
