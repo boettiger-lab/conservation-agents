@@ -14,13 +14,9 @@ file = os.path.basename(__file__)
 url = hash_url(file) # get hash URL at start of execution
 tensorboard_log="/var/log/tensorboard/single"
 
-env = gym.make("fishing-v1")
-## A2C2 #######################################################################
 
 model = A2C('MlpPolicy', env, verbose=0, tensorboard_log=tensorboard_log )
-
-
-ENV = "fishing-v1"    
+ENV = "fishing-v4"    
 env = gym.make(ENV)
 model.set_env(env)
 
@@ -29,5 +25,5 @@ mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
-env.plot(df, "results/A2C.png")
+env.plot(df, "results/A2C-v4.png")
 
