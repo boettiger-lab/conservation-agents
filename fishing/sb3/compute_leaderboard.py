@@ -28,10 +28,6 @@ model = escapement(env)
 df = env.simulate(model, reps=10)
 env.plot(df, "results/escapement.png")
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=1000)
-# Rescale score against optimum solution in this environment (err... identical in this case)
-opt = escapement(env)
-opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
-mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward 
 leaderboard("ESC", ENV, mean_reward, std_reward, url)
 print("algo:", "ESC", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
