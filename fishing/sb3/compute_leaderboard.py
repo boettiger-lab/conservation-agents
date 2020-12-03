@@ -18,7 +18,7 @@ tensorboard_log="/var/log/tensorboard/leaderboard"
 
 seed = 0
 
-ENV = "fishing-v2"    
+ENV = "fishing-v10"    
 env = gym.make(ENV)
 vec_env = make_vec_env(ENV, n_envs=4, seed=seed) # parallel workers for PPO, A2C
 
