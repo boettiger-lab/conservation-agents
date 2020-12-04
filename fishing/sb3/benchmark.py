@@ -24,4 +24,4 @@ print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 df = env.simulate(model, reps=10)
 env.plot(df, "results/benchmark.png")
 df = env.policyfn(model, reps=10)
-env.plot_policy(df, "results/bench-policy.png")
+#env.plot_policy(df, "results/bench-policy.png")
