@@ -15,8 +15,8 @@ url = hash_url(file) # get hash URL at start of execution
 tensorboard_log="/var/log/tensorboard/benchmark"
 
 ENV = "fishing-v1"    
-env = gym.make(ENV)
-model = A2C('MlpPolicy', env, r = 0.01, verbose=0)
+env = gym.make(ENV, r = 0.01)
+model = A2C('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=300000)
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
