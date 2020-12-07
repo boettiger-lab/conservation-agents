@@ -8,7 +8,7 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 pyenv install 3.7.9
-pyenv global 3.9.9
+pyenv global 3.7.9
 python -m venv /opt/venv/sb2
 source /opt/venv/sb2/bin/activate
 
