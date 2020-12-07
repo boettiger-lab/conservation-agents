@@ -175,16 +175,6 @@ hyper = {'gamma': 0.99,
          'log_std_init': -0.3072998266889968, 
          'net_arch': 'medium'}
          
-## v4 tuning
-hyper = {'gamma': 0.99, 
-         'lr': 1.8825727360507924e-05, 
-         'batch_size': 16, 
-         'buffer_size': 1000000, 
-         'learning_starts': 1000, 
-         'train_freq': 64, 
-         'tau': 0.01, 
-         'log_std_init': -3.3571901702788445, 
-         'net_arch': 'medium'}
 policy_kwargs = dict(log_std_init=hyper["log_std_init"], net_arch=[256, 256])
 model = SAC('MlpPolicy', 
             env, verbose=0, tensorboard_log=tensorboard_log, seed = seed,
