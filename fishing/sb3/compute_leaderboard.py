@@ -18,7 +18,7 @@ tensorboard_log="/var/log/tensorboard/leaderboard"
 
 seed = 0
 
-ENV = "fishing-v10"    
+ENV = "fishing-v1"    
 env = gym.make(ENV)
 vec_env = make_vec_env(ENV, n_envs=4, seed=seed) # parallel workers for PPO, A2C
 
@@ -64,13 +64,12 @@ print("algo:", "PPO", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/ppo.png")
-#policy = env.policyfn(model, reps=10)
-#env.plot(policy, "results/ppo-policy.png")
+policy = env.policyfn(model, reps=10)
+env.plot_policy(policy, "results/ppo-policy.png")
 
 
 ## A2C ######################################################################
 
-# ought to be vectorized!
 # Trial 328 finished with value: 8.025644302368164 and parameters: 
 hyper = {'gamma': 0.98, 'normalize_advantage': False, 'max_grad_norm': 0.3,
          'use_rms_prop': True, 'gae_lambda': 0.98, 'n_steps': 16,
@@ -106,8 +105,8 @@ print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
 env.plot(df, "results/a2c.png")
-#policy = env.policyfn(model, reps=10)
-#env.plot(policy, "results/a2c-policy.png")
+policy = env.policyfn(model, reps=10)
+env.plot_policy(policy, "results/a2c-policy.png")
 
 
 ## DDPG ######################################################################
@@ -160,8 +159,8 @@ print("algo:", "DDPG", "env:", ENV, "mean reward:", mean_reward, "std:", std_rew
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
 env.plot(df, "results/ddpg.png")
-#policy = env.policyfn(model, reps=10)
-#env.plot(policy, "results/ddpg-policy.png")
+policy = env.policyfn(model, reps=10)
+env.plot_policy(policy, "results/ddpg-policy.png")
 
 ## SAC #######################################################################
 
@@ -213,8 +212,8 @@ print("algo:", "SAC", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/sac.png")
-#policy = env.policyfn(model, reps=10)
-#env.plot(policy, "results/sac-policy.png")
+policy = env.policyfn(model, reps=10)
+env.plot_policy(policy, "results/sac-policy.png")
 
 
 ## TD3 ######################################################################
@@ -280,6 +279,6 @@ print("algo:", "TD3", "env:", ENV, "mean reward:", mean_reward, "std:", std_rewa
 ## simulate and plot results
 df = env.simulate(model, reps=10)
 env.plot(df, "results/td3.png")
-#policy = env.policyfn(model, reps=10)
-#env.plot(policy, "results/td3-policy.png")
+policy = env.policyfn(model, reps=10)
+env.plot_policy(policy, "results/td3-policy.png")
 
