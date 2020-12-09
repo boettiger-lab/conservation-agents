@@ -8,3 +8,30 @@ fishing-v1:
   policy: 'MlpPolicy'
   use_sde: True
 
+## Adapted from MountainCarContinuous-v0
+fishing-v4:
+  # env_wrapper: utils.wrappers.PlotActionWrapper
+  n_envs: 4
+  n_steps: 300000
+  n_timesteps: !!float 3e5
+  policy: 'MlpPolicy'
+  use_sde: True
+
+## Adapted from MountainCarContinuous-v0
+fishing-v10:
+  # env_wrapper: utils.wrappers.PlotActionWrapper
+  n_envs: 4
+  n_steps: 300000
+  n_timesteps: !!float 3e5
+  policy: 'MlpPolicy'
+  use_sde: True
+
+## Adapted from MountainCarContinuous-v0
+fishing-v11:
+  # env_wrapper: utils.wrappers.PlotActionWrapper
+  n_envs: 4
+  n_steps: 300000
+  n_timesteps: !!float 3e5
+  policy: 'MlpPolicy'
+  use_sde: True
+

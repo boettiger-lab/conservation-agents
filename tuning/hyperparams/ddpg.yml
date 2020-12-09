@@ -1,0 +1,6 @@
+fishing-v1:
+  n_timesteps: 300000
+  policy: 'MlpPolicy'
+  noise_type: 'ornstein-uhlenbeck'
+  noise_std: 0.5
+

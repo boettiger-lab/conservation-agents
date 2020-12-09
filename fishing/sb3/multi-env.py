@@ -25,7 +25,7 @@ mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
 opt = escapement(env)
 opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
 mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
-print("algo:", "A2C2", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 ## simulate and plot results for reference
 df = env.simulate(model, reps=10)
 env.plot(df, "results/serial-eval1.png")

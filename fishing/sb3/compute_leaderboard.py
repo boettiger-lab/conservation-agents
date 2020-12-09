@@ -242,7 +242,7 @@ if hyper["noise_type"] == "normal":
     hyper["action_noise"] = NormalActionNoise(
         mean=np.zeros(n_actions), sigma= hyper['noise_std'] * np.ones(n_actions)
     )
-elif noise_type == "ornstein-uhlenbeck":
+elif hyper["noise_type"] == "ornstein-uhlenbeck":
     hyper["action_noise"] = OrnsteinUhlenbeckActionNoise(
         mean=np.zeros(n_actions), sigma= hyper['noise_std'] * np.ones(n_actions)
     )
