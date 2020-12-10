@@ -44,8 +44,6 @@ leaderboard("MSY", ENV, mean_reward, std_reward, url)
 print("algo:", "MSY", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 
-# Consider running these in parallel?
-
 
 ## PPO ######################################################################
 
@@ -66,6 +64,7 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/ppo.png")
 policy = env.policyfn(model, reps=10)
 env.plot_policy(policy, "results/ppo-policy.png")
+model.save("models/ppo-tuned")
 
 
 ## A2C ######################################################################
@@ -107,6 +106,7 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/a2c.png")
 policy = env.policyfn(model, reps=10)
 env.plot_policy(policy, "results/a2c-policy.png")
+model.save("models/a2c-tuned")
 
 
 ## DDPG ######################################################################
@@ -161,6 +161,7 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/ddpg.png")
 policy = env.policyfn(model, reps=10)
 env.plot_policy(policy, "results/ddpg-policy.png")
+model.save("models/ddpg-tuned")
 
 ## SAC #######################################################################
 
@@ -204,6 +205,7 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/sac.png")
 policy = env.policyfn(model, reps=10)
 env.plot_policy(policy, "results/sac-policy.png")
+model.save("models/sac-tuned")
 
 
 ## TD3 ######################################################################
@@ -271,4 +273,4 @@ df = env.simulate(model, reps=10)
 env.plot(df, "results/td3.png")
 policy = env.policyfn(model, reps=10)
 env.plot_policy(policy, "results/td3-policy.png")
-
+model.save("models/td3-tuned")
