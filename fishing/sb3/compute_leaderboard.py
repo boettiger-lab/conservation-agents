@@ -3,6 +3,7 @@ import gym_fishing
 from gym_fishing.models.policies import msy, escapement
 from stable_baselines3 import SAC, TD3, A2C, PPO, DDPG, DQN
 from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard, hash_url
 import os
@@ -19,8 +20,11 @@ tensorboard_log="/var/log/tensorboard/leaderboard"
 seed = 0
 
 ENV = "fishing-v1"    
-env = gym.make(ENV)
-vec_env = make_vec_env(ENV, n_envs=4, seed=seed) # parallel workers for PPO, A2C
+env = gym.make(ENV, sigma = 0.1)
+vec_env = SubprocVecEnv([gym.make(ENV, sigma = 0.1, seed=i) for i in range(4)])
+
+
+#vec_env = make_vec_env(ENV, n_envs=4, seed=seed) # parallel workers for PPO, A2C
 
 
 ## Constant Escapement ######################################################
