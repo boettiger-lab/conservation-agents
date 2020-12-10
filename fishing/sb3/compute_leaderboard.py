@@ -21,10 +21,87 @@ seed = 0
 
 ENV = "fishing-v1"    
 env = gym.make(ENV, sigma = 0.1)
-vec_env = SubprocVecEnv([gym.make(ENV, sigma = 0.1, seed=i) for i in range(4)])
 
 
 #vec_env = make_vec_env(ENV, n_envs=4, seed=seed) # parallel workers for PPO, A2C
+
+def make_env(env_id, rank, seed=0, sigma = 0.1):
+    def _init():
+        env = gym.make(env_id, 
+                       sigma = sigma,
+                       r = (rank + 1) / 10)
+        env.seed(seed + rank)
+        return env
+    set_random_seed(seed)
+    return _init
+
+if __name__ == '__main__':
+    vec_env = SubprocVecEnv([make_env(ENV, i, sigma = 0.1) for i in range(4)])
+
+    ## PPO ######################################################################
+    
+    # load best tuned parameters...
+    model = PPO('MlpPolicy', vec_env, verbose=0, tensorboard_log=tensorboard_log, seed = seed)
+    model.learn(total_timesteps=300000)
+    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+    # Rescale score against optimum solution in this environment
+    opt = escapement(env)
+    opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+    mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
+    
+    leaderboard("PPO", ENV, mean_reward, std_reward, url)
+    print("algo:", "PPO", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+    
+    ## simulate and plot results
+    df = env.simulate(model, reps=10)
+    env.plot(df, "results/ppo.png")
+    policy = env.policyfn(model, reps=10)
+    env.plot_policy(policy, "results/ppo-policy.png")
+    model.save("models/ppo-tuned")
+    
+    
+    ## A2C ######################################################################
+    
+    # Trial 328 finished with value: 8.025644302368164 and parameters: 
+    hyper = {'gamma': 0.98, 'normalize_advantage': False, 'max_grad_norm': 0.3,
+             'use_rms_prop': True, 'gae_lambda': 0.98, 'n_steps': 16,
+             'lr_schedule': 'linear', 'lr': 0.03490204662520112, 
+             'ent_coef': 0.00026525398345043097, 'vf_coef': 0.18060066335808234, 
+             'log_std_init': -1.1353269076856574, 'ortho_init': True, 'net_arch': 'medium', 'activation_fn': 'relu'}
+    policy_kwargs = dict(log_std_init=hyper["log_std_init"],
+                         ortho_init = hyper["ortho_init"],
+                         activation_fn = nn.ReLU,
+                         net_arch=[256, 256])
+    
+    model = A2C('MlpPolicy', vec_env, verbose=0, tensorboard_log=tensorboard_log, seed = seed,
+    #            gamma = hyper["gamma"],
+    #            learning_rate = hyper["lr"],
+    #            normalize_advantage = hyper["normalize_advantage"],
+    #            gae_lambda = hyper["gae_lambda"],
+    #            n_steps = hyper["n_steps"],
+    #            ent_coef = hyper["ent_coef"],
+    #            vf_coef = hyper["vf_coef"],
+    #            policy_kwargs = policy_kwargs
+                )
+                
+    model.learn(total_timesteps=300000)
+    
+    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
+    # Rescale score against optimum solution in this environment
+    opt = escapement(env)
+    opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
+    mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
+    leaderboard("A2C", ENV, mean_reward, std_reward, url)
+    print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
+    
+    ## simulate and plot results for reference
+    df = env.simulate(model, reps=10)
+    env.plot(df, "results/a2c.png")
+    policy = env.policyfn(model, reps=10)
+    env.plot_policy(policy, "results/a2c-policy.png")
+    model.save("models/a2c-tuned")
+    
+
 
 
 ## Constant Escapement ######################################################
@@ -48,69 +125,6 @@ leaderboard("MSY", ENV, mean_reward, std_reward, url)
 print("algo:", "MSY", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
 
 
-
-## PPO ######################################################################
-
-# load best tuned parameters...
-model = PPO('MlpPolicy', vec_env, verbose=0, tensorboard_log=tensorboard_log, seed = seed)
-model.learn(total_timesteps=300000)
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-# Rescale score against optimum solution in this environment
-opt = escapement(env)
-opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
-mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
-
-leaderboard("PPO", ENV, mean_reward, std_reward, url)
-print("algo:", "PPO", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-## simulate and plot results
-df = env.simulate(model, reps=10)
-env.plot(df, "results/ppo.png")
-policy = env.policyfn(model, reps=10)
-env.plot_policy(policy, "results/ppo-policy.png")
-model.save("models/ppo-tuned")
-
-
-## A2C ######################################################################
-
-# Trial 328 finished with value: 8.025644302368164 and parameters: 
-hyper = {'gamma': 0.98, 'normalize_advantage': False, 'max_grad_norm': 0.3,
-         'use_rms_prop': True, 'gae_lambda': 0.98, 'n_steps': 16,
-         'lr_schedule': 'linear', 'lr': 0.03490204662520112, 
-         'ent_coef': 0.00026525398345043097, 'vf_coef': 0.18060066335808234, 
-         'log_std_init': -1.1353269076856574, 'ortho_init': True, 'net_arch': 'medium', 'activation_fn': 'relu'}
-policy_kwargs = dict(log_std_init=hyper["log_std_init"],
-                     ortho_init = hyper["ortho_init"],
-                     activation_fn = nn.ReLU,
-                     net_arch=[256, 256])
-
-model = A2C('MlpPolicy', vec_env, verbose=0, tensorboard_log=tensorboard_log, seed = seed,
-#            gamma = hyper["gamma"],
-#            learning_rate = hyper["lr"],
-#            normalize_advantage = hyper["normalize_advantage"],
-#            gae_lambda = hyper["gae_lambda"],
-#            n_steps = hyper["n_steps"],
-#            ent_coef = hyper["ent_coef"],
-#            vf_coef = hyper["vf_coef"],
-#            policy_kwargs = policy_kwargs
-            )
-            
-model.learn(total_timesteps=300000)
-
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-# Rescale score against optimum solution in this environment
-opt = escapement(env)
-opt_reward, std_reward = evaluate_policy(opt, env, n_eval_episodes=100)
-mean_reward = mean_reward / opt_reward; std_reward = std_reward / opt_reward   
-leaderboard("A2C", ENV, mean_reward, std_reward, url)
-print("algo:", "A2C", "env:", ENV, "mean reward:", mean_reward, "std:", std_reward)
-
-## simulate and plot results for reference
-df = env.simulate(model, reps=10)
-env.plot(df, "results/a2c.png")
-policy = env.policyfn(model, reps=10)
-env.plot_policy(policy, "results/a2c-policy.png")
-model.save("models/a2c-tuned")
 
 
 ## DDPG ######################################################################
