@@ -1,0 +1,2 @@
+,number,value,datetime_start,datetime_complete,duration,params_activation_fn,params_ent_coef,params_gae_lambda,params_gamma,params_log_std_init,params_lr,params_lr_schedule,params_max_grad_norm,params_n_steps,params_net_arch,params_normalize_advantage,params_ortho_init,params_use_rms_prop,params_vf_coef,state
+0,0,0.75,2020-12-01 00:55:56.300424,2020-12-01 00:57:07.216629,0 days 00:01:10.916205,relu,0.02168193985942346,0.98,0.95,-1.503017728344807,0.08912448791979068,linear,0.7,128,small,True,True,True,0.849948826334478,COMPLETE

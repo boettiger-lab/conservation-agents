@@ -49,7 +49,7 @@ model = TD3('MlpPolicy', env,  verbose=0, seed = seed,
             gradient_steps = hyper['train_freq'],
             n_episodes_rollout = hyper['n_episodes_rollout'],
             policy_kwargs=policy_kwargs)
-model.learn(total_timesteps=1e6)
+model.learn(total_timesteps=1e5)
 
 
 
@@ -58,4 +58,5 @@ df = env.simulate(model)
 env.plot(df, "results/TD3.png")
 
 ## Evaluate model
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=5)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
+print("algo:", "TD3", "env:", "conservation-v2", "mean reward:", mean_reward, "std:", std_reward)
