@@ -229,26 +229,13 @@ policy_kwargs = dict(net_arch=[256, 256])
 # [I 2020-11-24 18:03:25,390] Trial 29 finished with value: 7.736424446105957 and parameters: 
 # {'gamma': 0.99, 'lr': 3.550974876596194e-05, 'batch_size': 64, 'buffer_size': 100000, 'episodic': False, 'train_freq': 128, 'noise_type': 'ornstein-uhlenbeck', 'noise_std': 0.6615816256241758, 'net_arch': 'small'}. Best is trial 29 with value: 7.736424446105957.
 
-## actually worse
 #Trial 15 finished with value: 7.6994757652282715 and parameters: 
-#hyper = {'gamma': 0.995, 'lr': 0.0001355522450968401, 'batch_size': 128, 
-#         'buffer_size': 10000, 'episodic': False, 'train_freq': 128, 
-#         'noise_type': 'normal', 'noise_std': 0.6656948079225263, 
-#         'net_arch': 'big'}
-#policy_kwargs = dict(net_arch=[400, 300]) # big
+hyper = {'gamma': 0.995, 'lr': 0.0001355522450968401, 'batch_size': 128, 
+         'buffer_size': 10000, 'episodic': False, 'train_freq': 128, 
+         'noise_type': 'normal', 'noise_std': 0.6656948079225263, 
+         'net_arch': 'big'}
+policy_kwargs = dict(net_arch=[400, 300]) # big
 
-
-## best from sigma_0
-hyper= {
-    "batch_size": 32,
-    "buffer_size": 10000,
-    "episodic": False,
-    "gamma": 0.9999,
-    "lr": 0.000512517020156837,
-    "net_arch": "medium",
-    "noise_std": 0.9887668728863925,
-    "noise_type": "ornstein-uhlenbeck",
-    "train_freq": 2000 }
 
 
 if hyper['episodic']:

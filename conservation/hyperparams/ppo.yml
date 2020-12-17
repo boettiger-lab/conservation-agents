@@ -1,16 +1,7 @@
 
   
 # Adapted from MountainCarContinuous-v0:
-fishing-v1:
-  normalize: true
-  n_envs: 4
-  use_sde: True
-  n_timesteps: !!float 3e5
-  policy: 'MlpPolicy'
-  policy_kwargs: "dict(log_std_init=-3.29, ortho_init=False)"
-  
-# Adapted from MountainCarContinuous-v0:
-fishing-v4:
+conservation-v2:
   normalize: true
   n_envs: 4
   use_sde: True
@@ -18,23 +9,23 @@ fishing-v4:
   policy: 'MlpPolicy'
   policy_kwargs: "dict(log_std_init=-3.29, ortho_init=False)"
 
-
+  
 # Adapted from MountainCarContinuous-v0:
-fishing-v10:
+conservation-v3:
   normalize: true
   n_envs: 4
   use_sde: True
   n_timesteps: !!float 3e5
   policy: 'MlpPolicy'
   policy_kwargs: "dict(log_std_init=-3.29, ortho_init=False)"
-  
 
+  
 # Adapted from MountainCarContinuous-v0:
-fishing-v11:
+conservation-v5:
   normalize: true
   n_envs: 4
   use_sde: True
   n_timesteps: !!float 3e5
   policy: 'MlpPolicy'
   policy_kwargs: "dict(log_std_init=-3.29, ortho_init=False)"
-  
+

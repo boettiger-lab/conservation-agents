@@ -9,3 +9,15 @@ conservation-v2:
   policy: 'MlpPolicy'
   noise_type: 'ornstein-uhlenbeck'
   noise_std: 0.5
+  
+conservation-v3:
+  n_timesteps: 300000
+  policy: 'MlpPolicy'
+  noise_type: 'ornstein-uhlenbeck'
+  noise_std: 0.5
+
+conservation-v5:
+  n_timesteps: 300000
+  policy: 'MlpPolicy'
+  noise_type: 'ornstein-uhlenbeck'
+  noise_std: 0.5

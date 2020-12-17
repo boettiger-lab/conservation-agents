@@ -1,6 +1,23 @@
 
 
-fishing-v1:
+conservation-v2:
+  # env_wrapper: utils.wrappers.PlotActionWrapper
+  n_timesteps: !!float 50000
+  policy: 'MlpPolicy'
+  learning_rate: !!float 3e-4
+  buffer_size: 50000
+  batch_size: 512
+  ent_coef: 0.1
+  train_freq: 32
+  gradient_steps: 32
+  gamma: 0.9999
+  tau: 0.01
+  learning_starts: 0
+  use_sde: True
+  optimize_memory_usage: True
+  policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"
+  
+conservation-v3:
   # env_wrapper: utils.wrappers.PlotActionWrapper
   n_timesteps: !!float 50000
   policy: 'MlpPolicy'
@@ -19,7 +36,7 @@ fishing-v1:
   
 
 
-fishing-v4:
+conservation-v5:
   # env_wrapper: utils.wrappers.PlotActionWrapper
   n_timesteps: !!float 50000
   policy: 'MlpPolicy'
@@ -36,40 +53,3 @@ fishing-v4:
   optimize_memory_usage: True
   policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"
 
-
-
-fishing-v10:
-  # env_wrapper: utils.wrappers.PlotActionWrapper
-  n_timesteps: !!float 50000
-  policy: 'MlpPolicy'
-  learning_rate: !!float 3e-4
-  buffer_size: 50000
-  batch_size: 512
-  ent_coef: 0.1
-  train_freq: 32
-  gradient_steps: 32
-  gamma: 0.9999
-  tau: 0.01
-  learning_starts: 0
-  use_sde: True
-  optimize_memory_usage: True
-  policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"
-
-
-
-fishing-v11:
-  # env_wrapper: utils.wrappers.PlotActionWrapper
-  n_timesteps: !!float 50000
-  policy: 'MlpPolicy'
-  learning_rate: !!float 3e-4
-  buffer_size: 50000
-  batch_size: 512
-  ent_coef: 0.1
-  train_freq: 32
-  gradient_steps: 32
-  gamma: 0.9999
-  tau: 0.01
-  learning_starts: 0
-  use_sde: True
-  optimize_memory_usage: True
-  policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"  
