@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import shutil
 import glob
 import numpy as np
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
@@ -279,15 +280,19 @@ def tune_best(algo, env_id, log_dir = "logs", total_timesteps = 300000,
   hyper = best_hyperpars(log_dir, algo)
   print("algo:", algo, "env:", env_id, "mean reward:", mean_reward,
         "std:", std_reward, "tuned_value:", hyper["value"])
-  
-  model.save(os.path.join(outdir, algo, "agent"))
+        
+        
+  dest = os.path.join(outdir, env_id, algo)
+  if os.path.exists(dest):
+    shutil.rmtree(dest)
+  os.makedirs(dest)
+  model.save(os.path.join(dest, "agent"))
 
   ## simulate and plot results
   df = eval_env.simulate(model, reps=10)
-  df.to_csv(os.path.join(outdir, algo, "sim.csv"))
-  eval_env.plot(df, os.path.join(outdir, algo, "sim.png"))
-  policy = eval_env.policyfn(model, reps=10)
-  eval_env.plot_policy(policy, os.path.join(outdir, algo, "policy.png"))
-  
-  
 
+  df.to_csv(os.path.join(dest, "sim.csv"))
+  eval_env.plot(df, os.path.join(dest, "sim.png"))
+  policy = eval_env.policyfn(model, reps=10)
+  eval_env.plot_policy(policy, os.path.join(dest, "policy.png"))
+  
