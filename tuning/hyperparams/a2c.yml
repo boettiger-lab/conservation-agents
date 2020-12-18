@@ -10,3 +10,27 @@ conservation-v2:
   policy: 'MlpPolicy'
   use_sde: True
 
+
+
+
+## Adapted from MountainCarContinuous-v0
+conservation-v3:
+  # env_wrapper: utils.wrappers.PlotActionWrapper
+  n_envs: 4
+  n_steps: 1e5
+  n_timesteps: !!float 3e5
+  policy: 'MlpPolicy'
+  use_sde: True
+
+
+
+## Adapted from MountainCarContinuous-v0
+conservation-v5:
+  # env_wrapper: utils.wrappers.PlotActionWrapper
+  n_envs: 4
+  n_steps: 1e5
+  n_timesteps: !!float 3e5
+  policy: 'MlpPolicy'
+  use_sde: True
+
+

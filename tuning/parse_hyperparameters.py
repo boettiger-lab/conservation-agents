@@ -5,9 +5,12 @@ import numpy as np
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 from torch import nn as nn
 from stable_baselines3 import SAC, TD3, A2C, PPO, DDPG, DQN
+from stable_baselines3.common.evaluation import evaluate_policy
 
-logs_dir = "logs"
-algos = os.listdir(logs_dir)
+
+import gym
+import gym_conservation
+from stable_baselines3.common.env_util import make_vec_env
 
 
 def best_hyperpars(logs_dir, algo):
@@ -53,7 +56,7 @@ def a2c_best(policy, env, logs_dir = "logs",
               tensorboard_log=tensorboard_log, 
               seed = seed,
               learning_rate = hyper["params_lr"],
-              n_steps = hyper["params_n_steps"],
+              n_steps = np.int(hyper["params_n_steps"]),
               gamma = hyper["params_gamma"],
               gae_lambda = hyper["params_gae_lambda"],
               ent_coef = hyper["params_ent_coef"],
@@ -141,7 +144,7 @@ def ddpg_best(policy, env, logs_dir = "logs",
   hyper["params_action_noise"] = NormalActionNoise(
       mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions)
   )
-  if noise_type == "ornstein-uhlenbeck":
+  if hyper["params_noise_type"] == "ornstein-uhlenbeck":
     hyper["params_action_noise"] = OrnsteinUhlenbeckActionNoise(
         mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions)
     )
@@ -156,7 +159,7 @@ def ddpg_best(policy, env, logs_dir = "logs",
               buffer_size = hyper['params_buffer_size'],
               action_noise = hyper['params_action_noise'],
               train_freq = hyper['params_train_freq'],
-              gradient_steps = hyper['params_train_freq'],
+              gradient_steps = np.int(hyper['params_train_freq']),
               n_episodes_rollout = hyper['params_n_episodes_rollout'],
               policy_kwargs=policy_kwargs)
   return model
@@ -232,7 +235,7 @@ def td3_best(policy, env, logs_dir = "logs",
   hyper["params_action_noise"] = NormalActionNoise(
       mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions)
   )
-  if noise_type == "ornstein-uhlenbeck":
+  if hyper["params_noise_type"] == "ornstein-uhlenbeck":
     hyper["params_action_noise"] = OrnsteinUhlenbeckActionNoise(
         mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions)
     )
@@ -247,11 +250,40 @@ def td3_best(policy, env, logs_dir = "logs",
               buffer_size = hyper['params_buffer_size'],
               action_noise = hyper['params_action_noise'],
               train_freq = hyper['params_train_freq'],
-              gradient_steps = hyper['params_train_freq'],
+              gradient_steps = np.int(hyper['params_train_freq']),
               n_episodes_rollout = hyper['params_n_episodes_rollout'],
               policy_kwargs=policy_kwargs)
   return model
   
+
+def tune_best(algo, ENV, log_dir = "logs", total_timesteps = 300000,
+              tensorboard_log = None, seed = None, verbose = 0,
+              n_envs = 4,
+              outdir = "results"):
+  agent = {"ppo": ppo_best,
+           "a2c": a2c_best,
+           "sac": sac_best,
+           "ddpg": ddpg_best,
+           "td3": td3_best}[algo]
+  
+  train_env = gym.make(ENV)
+  eval_env = train_env
+  if algo in ["ppo", "a2c"]:
+    train_env = make_vec_env(ENV, n_envs=n_envs, seed = seed)
+  
+  model = agent('MlpPolicy', train_env, verbose = verbose, tensorboard_log = tensorboard_log, seed = seed)
+  model.learn(total_timesteps = total_timesteps)
+  mean_reward, std_reward = evaluate_policy(model, eval_env, n_eval_episodes=100)
+  
+  hyper = best_hyperpars(log_dir, algo)
+  print("algo:", algo, "env:", eval_env.__str__, "mean reward:", mean_reward, "std:", std_reward, "tuned_value:", hyper["value"])
+  
+  ## simulate and plot results
+  df = eval_env.simulate(model, reps=10)
+  eval_env.plot(df, os.path.join(outdir, algo, "sim.png"))
+  policy = eval_env.policyfn(model, reps=10)
+  eval_env.plot_policy(policy, os.path.join(outdir, algo, "policy.png"))
+  model.save(os.path.join(outdir, algo, "leaderboard"))
   
   
 
