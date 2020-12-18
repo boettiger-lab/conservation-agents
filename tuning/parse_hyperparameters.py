@@ -10,6 +10,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 
 import gym
 import gym_conservation
+import gym_fishing
 from stable_baselines3.common.env_util import make_vec_env
 
 
@@ -155,8 +156,8 @@ def ddpg_best(policy, env, logs_dir = "logs",
               seed = seed,
               gamma = hyper['params_gamma'],
               learning_rate = hyper['params_lr'],
-              batch_size = hyper['params_batch_size'],            
-              buffer_size = hyper['params_buffer_size'],
+              batch_size = np.int(hyper['params_batch_size']),            
+              buffer_size = np.int(hyper['params_buffer_size']),
               action_noise = hyper['params_action_noise'],
               train_freq = hyper['params_train_freq'],
               gradient_steps = np.int(hyper['params_train_freq']),
@@ -256,7 +257,7 @@ def td3_best(policy, env, logs_dir = "logs",
   return model
   
 
-def tune_best(algo, ENV, log_dir = "logs", total_timesteps = 300000,
+def tune_best(algo, env_id, log_dir = "logs", total_timesteps = 300000,
               tensorboard_log = None, seed = None, verbose = 0,
               n_envs = 4,
               outdir = "results"):
@@ -266,24 +267,27 @@ def tune_best(algo, ENV, log_dir = "logs", total_timesteps = 300000,
            "ddpg": ddpg_best,
            "td3": td3_best}[algo]
   
-  train_env = gym.make(ENV)
+  train_env = gym.make(env_id)
   eval_env = train_env
   if algo in ["ppo", "a2c"]:
-    train_env = make_vec_env(ENV, n_envs=n_envs, seed = seed)
+    train_env = make_vec_env(env_id, n_envs=n_envs, seed = seed)
   
   model = agent('MlpPolicy', train_env, verbose = verbose, tensorboard_log = tensorboard_log, seed = seed)
   model.learn(total_timesteps = total_timesteps)
   mean_reward, std_reward = evaluate_policy(model, eval_env, n_eval_episodes=100)
   
   hyper = best_hyperpars(log_dir, algo)
-  print("algo:", algo, "env:", eval_env.__str__, "mean reward:", mean_reward, "std:", std_reward, "tuned_value:", hyper["value"])
+  print("algo:", algo, "env:", env_id, "mean reward:", mean_reward,
+        "std:", std_reward, "tuned_value:", hyper["value"])
   
+  model.save(os.path.join(outdir, algo, "agent"))
+
   ## simulate and plot results
   df = eval_env.simulate(model, reps=10)
+  df.to_csv(os.path.join(outdir, algo, "sim.csv"))
   eval_env.plot(df, os.path.join(outdir, algo, "sim.png"))
   policy = eval_env.policyfn(model, reps=10)
   eval_env.plot_policy(policy, os.path.join(outdir, algo, "policy.png"))
-  model.save(os.path.join(outdir, algo, "leaderboard"))
   
   
 
