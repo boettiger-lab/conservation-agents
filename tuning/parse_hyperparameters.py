@@ -15,25 +15,25 @@ import gym_fishing
 from stable_baselines3.common.env_util import make_vec_env
 
 
-def best_hyperpars(logs_dir, algo):
+def best_hyperpars(logs_dir, env_id, algo):
   """
   Extract the best hyperparameter row from the logs
   """
-  reports = glob.glob(os.path.join(logs_dir, algo, "report*.csv"))
+  reports = glob.glob(os.path.join(logs_dir, algo, "report_" + env_id + "*.csv"))
   df = pd.DataFrame()
   for r in reports:
     df = df.append(pd.read_csv(r))
     best = df.iloc[df['value'].idxmax()]
-  return best  
-    
+  return best
+
 
 # Some parameters, like use_sde, can be configured in initial hyperparameters but are not tuned
 # Really we should be reading these from preset hyperparameters yaml
-def a2c_best(policy, env, logs_dir = "logs", 
-             verbose = 0, tensorboard_log = None, seed = None, use_sde = True):
+def a2c_best(policy, env_id, logs_dir = "logs", 
+             verbose = 0, tensorboard_log = None, 
+             seed = None, use_sde = True, n_envs = 4):
   
-  hyper = best_hyperpars(logs_dir, "a2c")
-  
+  hyper = best_hyperpars(logs_dir, env_id, "a2c")
   
   activation_fn = {"tanh": nn.Tanh, 
                    "relu": nn.ReLU, 
@@ -53,6 +53,8 @@ def a2c_best(policy, env, logs_dir = "logs",
                      activation_fn = activation_fn,
                      net_arch = net_arch)
   
+  # env = gym.make(env_id)
+  env = make_vec_env(env_id, n_envs=n_envs, seed = seed)
   model = A2C('MlpPolicy', env, 
               verbose = verbose, 
               tensorboard_log=tensorboard_log, 
@@ -73,10 +75,11 @@ def a2c_best(policy, env, logs_dir = "logs",
 
 
 
-def ppo_best(policy, env, logs_dir = "logs", 
-             verbose = 0, tensorboard_log = None, seed = None, use_sde = True):
+def ppo_best(policy, env_id, logs_dir = "logs", 
+             verbose = 0, tensorboard_log = None, seed = None, 
+             use_sde = True, n_envs = 4):
   
-  hyper = best_hyperpars(logs_dir, "ppo")
+  hyper = best_hyperpars(logs_dir, env_id, "ppo")
   
   activation_fn = {"tanh": nn.Tanh, 
                    "relu": nn.ReLU, 
@@ -95,6 +98,7 @@ def ppo_best(policy, env, logs_dir = "logs",
                      activation_fn = activation_fn,
                      net_arch = net_arch)
   
+  env = make_vec_env(env_id, n_envs=n_envs, seed = seed)
   model = PPO('MlpPolicy', env, 
               verbose = verbose, 
               tensorboard_log=tensorboard_log, 
@@ -117,10 +121,11 @@ def ppo_best(policy, env, logs_dir = "logs",
 
 
 
-def ddpg_best(policy, env, logs_dir = "logs", 
+def ddpg_best(policy, env_id, logs_dir = "logs", 
               verbose=0, tensorboard_log=None, seed=None):
   
-  hyper = best_hyperpars(logs_dir, "ddpg")
+  env = gym.make(env_id)
+  hyper = best_hyperpars(logs_dir, env_id, "ddpg")
   
 #  if hyper["params_activation_fn"] == "relu":
 #    activation_fn = nn.ReLU
@@ -169,11 +174,12 @@ def ddpg_best(policy, env, logs_dir = "logs",
 
 
 
-def sac_best(policy, env, logs_dir = "logs", 
+def sac_best(policy, env_id, logs_dir = "logs", 
               verbose = 0, tensorboard_log = None, seed = None,
               use_sde = True):
-  
-  hyper = best_hyperpars(logs_dir, "sac")
+                
+  env = gym.make(env_id)
+  hyper = best_hyperpars(logs_dir, env_id, "sac")
 
   if hyper["params_net_arch"] == "medium":
     net_arch = [256, 256]
@@ -185,6 +191,7 @@ def sac_best(policy, env, logs_dir = "logs",
       
   policy_kwargs = dict(log_std_init = hyper["params_log_std_init"], 
                        net_arch = net_arch)
+                       
   model = SAC('MlpPolicy', 
               env,
               verbose = verbose, 
@@ -207,10 +214,10 @@ def sac_best(policy, env, logs_dir = "logs",
 
 
 
-def td3_best(policy, env, logs_dir = "logs", 
+def td3_best(policy, env_id, logs_dir = "logs", 
               verbose = 0, tensorboard_log = None, seed = None):
-  
-  hyper = best_hyperpars(logs_dir, "td3")
+  env = gym.make(env_id)
+  hyper = best_hyperpars(logs_dir, env_id, "td3")
   
 #  if hyper["params_activation_fn"] == "relu":
 #    activation_fn = nn.ReLU
@@ -268,16 +275,13 @@ def tune_best(algo, env_id, log_dir = "logs", total_timesteps = 300000,
            "ddpg": ddpg_best,
            "td3": td3_best}[algo]
   
-  train_env = gym.make(env_id)
-  eval_env = train_env
-  if algo in ["ppo", "a2c"]:
-    train_env = make_vec_env(env_id, n_envs=n_envs, seed = seed)
+  eval_env = gym.make(env_id)
   
-  model = agent('MlpPolicy', train_env, verbose = verbose, tensorboard_log = tensorboard_log, seed = seed)
+  model = agent('MlpPolicy', env_id, verbose = verbose, tensorboard_log = tensorboard_log, seed = seed)
   model.learn(total_timesteps = total_timesteps)
   mean_reward, std_reward = evaluate_policy(model, eval_env, n_eval_episodes=100)
   
-  hyper = best_hyperpars(log_dir, algo)
+  hyper = best_hyperpars(log_dir, env_id, algo)
   print("algo:", algo, "env:", env_id, "mean reward:", mean_reward,
         "std:", std_reward, "tuned_value:", hyper["value"])
         
