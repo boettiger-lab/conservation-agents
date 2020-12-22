@@ -21,7 +21,7 @@ tensorboard_log="/var/log/tensorboard/single"
 seed = 0
 
 ENV = "fishing-v1"    
-env = gym.make(ENV, sigma = 0.1, r= 0.01,  Tmax=1000)
+env = gym.make(ENV, sigma = 0.1)
 
 ## TD3 ######################################################################
 
@@ -36,8 +36,24 @@ hyper = {'gamma': 0.995, 'lr': 0.0001355522450968401, 'batch_size': 128,
          'buffer_size': 10000, 'episodic': False, 'train_freq': 128, 
          'noise_type': 'normal', 'noise_std': 0.6656948079225263, 
          'net_arch': 'big'}
-policy_kwargs = dict(net_arch=[400, 300]) # big
 
+## current best from sigma0 tuning, not great    
+#hyper= {
+#    "batch_size": 32,
+#    "buffer_size": 10000,
+#    "episodic": False,
+#    "gamma": 0.9999,
+#    "lr": 0.000512517020156837,
+#    "net_arch": "medium",
+#    "noise_std": 0.9887668728863925,
+#    "noise_type": "ornstein-uhlenbeck",
+#    "train_freq": 2000 }
+
+
+if hyper["net_arch"] == "big":
+    policy_kwargs = dict(net_arch=[400, 300]) # big
+else:
+    policy_kwargs = dict(net_arch=[256, 256]) # medium
 
 
 if hyper['episodic']:

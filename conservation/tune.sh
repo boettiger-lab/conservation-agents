@@ -1,6 +1,7 @@
 #!/bin/bash
 export CUDA_VISIBLE_DEVICES="1"
 
+
  CUDA_VISIBLE_DEVICES="" python ../tuning/zoo_train.py   --algo a2c --env conservation-v5 -n 300000 -optimize \
   --n-trials 400 --n-jobs 4 --sampler random --pruner median \
   --storage sqlite:///tuning.db --study-name a2c-cons-v5 &
