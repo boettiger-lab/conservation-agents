@@ -31,7 +31,7 @@ def best_hyperpars(logs_dir, env_id, algo):
 # Really we should be reading these from preset hyperparameters yaml
 def a2c_best(policy, env_id, logs_dir = "logs", 
              verbose = 0, tensorboard_log = None, 
-             seed = None, use_sde = True, n_envs = 4):
+             seed = 0, use_sde = True, n_envs = 4):
   
   hyper = best_hyperpars(logs_dir, env_id, "a2c")
   
@@ -76,7 +76,7 @@ def a2c_best(policy, env_id, logs_dir = "logs",
 
 
 def ppo_best(policy, env_id, logs_dir = "logs", 
-             verbose = 0, tensorboard_log = None, seed = None, 
+             verbose = 0, tensorboard_log = None, seed = 0, 
              use_sde = True, n_envs = 4):
   
   hyper = best_hyperpars(logs_dir, env_id, "ppo")
@@ -175,7 +175,7 @@ def ddpg_best(policy, env_id, logs_dir = "logs",
 
 
 def sac_best(policy, env_id, logs_dir = "logs", 
-              verbose = 0, tensorboard_log = None, seed = None,
+              verbose = 0, tensorboard_log = None, seed = 0,
               use_sde = True):
                 
   env = gym.make(env_id)
@@ -215,7 +215,7 @@ def sac_best(policy, env_id, logs_dir = "logs",
 
 
 def td3_best(policy, env_id, logs_dir = "logs", 
-              verbose = 0, tensorboard_log = None, seed = None):
+              verbose = 0, tensorboard_log = None, seed = 0):
   env = gym.make(env_id)
   hyper = best_hyperpars(logs_dir, env_id, "td3")
   
@@ -266,7 +266,7 @@ def td3_best(policy, env_id, logs_dir = "logs",
   
 
 def tune_best(algo, env_id, log_dir = "logs", total_timesteps = 300000,
-              tensorboard_log = None, seed = None, verbose = 0,
+              tensorboard_log = None, seed = 0, verbose = 0,
               n_envs = 4,
               outdir = "results"):
   agent = {"ppo": ppo_best,
