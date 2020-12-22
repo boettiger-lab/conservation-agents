@@ -23,7 +23,7 @@ def best_hyperpars(logs_dir, env_id, algo):
   df = pd.DataFrame()
   for r in reports:
     df = df.append(pd.read_csv(r))
-    best = df.iloc[df['value'].idxmax()]
+  best = df.sort_values("value", ascending=False).iloc[0]
   return best
 
 
