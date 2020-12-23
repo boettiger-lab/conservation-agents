@@ -1,4 +1,4 @@
-
+from stable_baselines3 import SAC, TD3, A2C, PPO, DDPG, DQN
 from stable_baselines3.common.env_util import make_vec_env
 
 import sys
@@ -33,9 +33,10 @@ hyper = {
 "value": 0 # only in logs
 }
 
+# Alternately, load tuned values  from log dir
 #hyper = best_hyperpars(log_dir, env_id, algo)
 
-## Configured in hyperparams/a2c.yml
+# Configured in hyperparams/a2c.yml
 use_sde = True
 n_envs = 4
 
@@ -43,3 +44,13 @@ env = make_vec_env(env_id, n_envs = n_envs, seed = seed)
 model = a2c(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)
 model.learn(total_timesteps = total_timesteps)
 custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
+
+
+## Compare to vanilla default execution
+model = A2C('MlpPolicy', env, verbose = verbose, tensorboard_log=tensorboard_log, 
+            seed = seed, use_sde = use_sde)
+model.learn(total_timesteps = total_timesteps)
+custom_eval(model, env_id, algo, seed, "vanilla")
+
+
+
