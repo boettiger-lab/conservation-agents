@@ -8,7 +8,6 @@ from torch import nn as nn
 from stable_baselines3 import SAC, TD3, A2C, PPO, DDPG, DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 
-
 import gym
 import gym_conservation
 import gym_fishing
@@ -300,3 +299,46 @@ def tune_best(algo, env_id, log_dir = "logs", total_timesteps = 300000,
   policy = eval_env.policyfn(model, reps=10)
   eval_env.plot_policy(policy, os.path.join(dest, "policy.png"))
   
+
+
+def make_policy_kwargs(hyper, algo = "ppo"):
+  if hyper["params_net_arch"] == "medium":
+    net_arch = [256, 256]
+  elif hyper["params_net_arch"] == "big":
+    net_arch = [400, 300]
+  else:
+    net_arch = [64, 64]
+  
+  ##  NOTE that tuner always uses separate nets for PPO/A2C actor and critic
+  ##  Sometimes that's not actually better, e.g. in fishing! 
+  if algo in ["a2c", "ppo"]:
+    net_arch = [dict(pi = net_arch, vf = net_arch)]
+    
+  if "params_activation_fn" in hyper.keys():
+    activation_fn = {"tanh": nn.Tanh, 
+                     "relu": nn.ReLU, 
+                     "elu": nn.ELU, 
+                     "leaky_relu": nn.LeakyReLU}[hyper["params_activation_fn"]]
+  elif algo in ["a2c", "ppo", "sac"]:
+    activation_fn = nn.Tanh
+  else:
+    activation_fn = nn.ReLU
+  if "params_log_std_init" in hyper.keys():
+    log_std_init = hyper["params_log_std_init"]
+  elif algo in ["a2c", "ppo"]:
+    log_std_init = 0.0
+  elif algo == "sac":
+    log_std_init = -3
+  else:
+    log_std_init = None
+  if "ortho_init" in hyper.keys():
+    ortho_init = hyper["params_ortho_init"],
+  else:
+    ortho_init = True
+  policy_kwargs = dict(log_std_init = log_std_init,
+                       ortho_init = ortho_init,
+                       activation_fn = activation_fn,
+                       net_arch = net_arch)
+  return policy_kwargs
+
+
