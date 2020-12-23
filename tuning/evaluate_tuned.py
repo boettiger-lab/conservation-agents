@@ -1,8 +1,9 @@
 import argparse
 import sys
 sys.path.append("tuning")
-from parse_hyperparameters import tune_best
+from parse_hyperparameters import train_from_logs
 
+import gym_conservation
 
 
 def main():  # noqa: C901
@@ -17,12 +18,15 @@ def main():  # noqa: C901
     parser.add_argument("-tb", "--tensorboard-log", help="Tensorboard log dir", default="", type=str)
 
     args = parser.parse_args()
-
-
-    
-    tune_best(args.algo, args.env, total_timesteps = args.n_timesteps,
-              log_dir = args.folder, tensorboard_log = args.tensorboard_log,
-              seed = args.seed, verbose = args.verbose, n_envs = args.n_envs)
+    train_from_logs(args.algo, 
+                    args.env, 
+                    log_dir = args.folder, 
+                    total_timesteps = args.n_timesteps,
+                    tensorboard_log = args.tensorboard_log,
+                    seed = args.seed, 
+                    verbose = args.verbose, 
+                    n_envs = args.n_envs,
+                    outdir = "results")
 
 
 if __name__ == "__main__":

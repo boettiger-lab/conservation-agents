@@ -89,10 +89,20 @@ def make_policy_kwargs(hyper, algo = "ppo"):
     ortho_init = hyper["params_ortho_init"],
   else:
     ortho_init = True
-  policy_kwargs = dict(log_std_init = log_std_init,
-                       ortho_init = ortho_init,
-                       activation_fn = activation_fn,
-                       net_arch = net_arch)
+    
+  if algo in ["a2c", "ppo"]:
+    policy_kwargs = dict(log_std_init = log_std_init,
+                         ortho_init = ortho_init,
+                         activation_fn = activation_fn,
+                         net_arch = net_arch)
+  ## technically could pass activation_fn, but tuner does not tune it
+  elif algo == "sac":
+    policy_kwargs = dict(log_std_init = log_std_init,
+                        net_arch = net_arch)
+  else:
+    policy_kwargs = dict(net_arch = net_arch)
+    
+    
   return policy_kwargs
 
 
@@ -198,6 +208,7 @@ def sac(env, hyper, policy = "MlpPolicy",
               learning_starts = hyper['params_learning_starts'],
               train_freq = hyper['params_train_freq'],
               tau = hyper['params_tau'],
+              gradient_steps = hyper['params_train_freq'], # tuner assumes this
               policy_kwargs=policy_kwargs, 
               device = device)
   return model
@@ -226,31 +237,27 @@ def td3(env, hyper, policy = "MlpPolicy",
               device = device)
   return model
 
+AGENT = {"ppo": ppo,
+         "a2c": a2c,
+         "sac": sac,
+         "ddpg": ddpg,
+         "td3": td3}
 
-def train_hyper(algo, env_id, log_dir = "logs", total_timesteps = 300000,
+def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
           tensorboard_log = None, seed = 0, verbose = 0,
           n_envs = 4, outdir = "results"):
-    hyper = best_hyperpars(log_dir, env_id, algo)
-    learn(algo, hyper, env_id, total_timesteps, tensorboard_log,
-          seed, verbose, n_nenvs, outdir)
-
-def learn(algo, hyper, env_id, total_timesteps = 300000,
-          tensorboard_log = None, seed = 0, verbose = 0,
-          n_envs = 4, outdir = "results"):
-            
-  agent = {"ppo": ppo,
-           "a2c": a2c,
-           "sac": sac,
-           "ddpg": ddpg,
-           "td3": td3}[algo]
-           
+  
+  # create env    
   if(algo in ["a2c", "ppo"]):
     env = make_vec_env(env_id, n_envs = n_envs, seed = seed)
   else:
     env = gym.make(env_id)
-  
+  # Create and train agent
+  agent = AGENT[algo]
+  hyper = best_hyperpars(log_dir, env_id, algo)
   model = agent(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed)
   model.learn(total_timesteps = total_timesteps)
+  # evaluate agent
   custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
   
   
