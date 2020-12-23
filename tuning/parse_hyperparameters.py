@@ -23,7 +23,7 @@ def dir_create(dest):
   os.makedirs(dest)
 
 
-def best_hyperpars(logs_dir, env_id, algo):
+def best_hyperpars(logs_dir, env_id, algo, i=0):
   """
   Extract the best hyperparameter row from the logs
   """
@@ -31,7 +31,7 @@ def best_hyperpars(logs_dir, env_id, algo):
   df = pd.DataFrame()
   for r in reports:
     df = df.append(pd.read_csv(r))
-  best = df.sort_values("value", ascending=False).iloc[0]
+  best = df.sort_values("value", ascending=False).iloc[i]
   return best
 
 
