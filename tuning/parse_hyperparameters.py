@@ -84,10 +84,10 @@ def make_policy_kwargs(hyper, algo):
     log_std_init = -3
   else:
     log_std_init = None
-  if "ortho_init" in hyper.keys():
+  if algo == "a2c":
     ortho_init = hyper["params_ortho_init"],
   else:
-    ortho_init = True
+    ortho_init = False
     
   if algo in ["a2c", "ppo"]:
     policy_kwargs = dict(log_std_init = log_std_init,
