@@ -61,12 +61,11 @@ def make_policy_kwargs(hyper, algo):
     net_arch = [400, 300]
   else:
     net_arch = [64, 64]
-  
-  ##  NOTE that zoo's tuner always uses separate nets for PPO/A2C actor and critic
-  ##  Sometimes that's not actually better, e.g. in fishing! 
   if algo in ["a2c", "ppo"]:
-    net_arch = [dict(pi = net_arch, vf = net_arch)]
-    
+     net_arch = {
+        "small": [dict(pi=[64, 64], vf=[64, 64])],
+        "medium": [dict(pi=[256, 256], vf=[256, 256])],
+    }[hyper["params_net_arch"]]
   if "params_activation_fn" in hyper.keys():
     activation_fn = {"tanh": nn.Tanh, 
                      "relu": nn.ReLU, 
@@ -88,7 +87,6 @@ def make_policy_kwargs(hyper, algo):
     ortho_init = hyper["params_ortho_init"],
   else:
     ortho_init = False
-    
   if algo in ["a2c", "ppo"]:
     policy_kwargs = dict(log_std_init = log_std_init,
                          ortho_init = ortho_init,
@@ -100,8 +98,6 @@ def make_policy_kwargs(hyper, algo):
                         net_arch = net_arch)
   else:
     policy_kwargs = dict(net_arch = net_arch)
-    
-    
   return policy_kwargs
 
 
@@ -236,6 +232,12 @@ def td3(env, hyper, policy = "MlpPolicy",
               device = device)
   return model
 
+MODEL = {"ppo": PPO,
+         "a2c": A2C,
+         "sac": SAC,
+         "ddpg": DDPG,
+         "td3": TD3}
+         
 AGENT = {"ppo": ppo,
          "a2c": a2c,
          "sac": sac,
@@ -244,7 +246,7 @@ AGENT = {"ppo": ppo,
 
 def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
           tensorboard_log = None, seed = 0, verbose = 0,
-          n_envs = 4, outdir = "results"):
+          n_envs = 4, outdir = "results", use_sde = True):
   
   # create env    
   if(algo in ["a2c", "ppo"]):
@@ -254,11 +256,20 @@ def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
   # Create and train agent
   agent = AGENT[algo]
   hyper = best_hyperpars(log_dir, env_id, algo)
-  model = agent(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed)
+  model = agent(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)
   model.learn(total_timesteps = total_timesteps)
   # evaluate agent
   custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
-  
+
+def load_results(algo, env_id, seed = 0, verbose = 0, outdir = "results", log_dir = "logs"):
+  agent = MODEL[algo]
+  dest = os.path.join(outdir, env_id, algo)
+  model = agent.load(os.path.join(dest, "agent"))
+  hyper = best_hyperpars(log_dir, env_id, algo)
+
+  # evaluate agent
+  custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
+    
   
 # FIXME env.plot env.simulate are non-standard, should be done with render() loop  
 def custom_eval(model, env_id, algo, seed = 0, outdir="results", value = np.nan):

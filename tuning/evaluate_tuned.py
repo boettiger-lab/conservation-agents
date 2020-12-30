@@ -26,7 +26,8 @@ def main():  # noqa: C901
                     seed = args.seed, 
                     verbose = args.verbose, 
                     n_envs = args.n_envs,
-                    outdir = "results")
+                    outdir = "results",
+                    use_sde = False)
 
 
 if __name__ == "__main__":
