@@ -8,6 +8,8 @@ from parse_hyperparameters import best_hyperpars, custom_eval, ppo
 env_id = "conservation-v5"
 algo="ppo"
 seed = None
+tensorboard_log="/var/log/tensorboard/single"
+ 
 hyper = {'params_batch_size': 32, 
          'params_n_steps': 32,
          'params_gamma': 0.98,
@@ -50,14 +52,14 @@ hyper = {'params_batch_size': 32,
 #hyper = best_hyperpars("logs", env_id, algo, 1)
 
 env = make_vec_env(env_id, n_envs = 4, seed = seed)
-model = ppo(env, hyper, 'MlpPolicy', verbose = 0, tensorboard_log = "/var/log/tensorboard/single", seed = seed, use_sde = True, device="cpu")
+model = ppo(env, hyper, 'MlpPolicy', verbose = 0, tensorboard_log = tensorboard_log, seed = seed, use_sde = True, device="cpu")
 model.learn(total_timesteps = 300000)
 custom_eval(model, env_id, algo, seed = seed, outdir = "results", value = hyper["value"])
 
 
 
 ## Compare to vanilla default execution.  Vanilla is no action noise, but tuning always uses action noise(?)
-#model = PPO('MlpPolicy', env, verbose = 0, tensorboard_log="/var/log/tensorboard/single", 
+#model = PPO('MlpPolicy', env, verbose = 0, tensorboard_log = tensorboard_log, 
 #            seed = seed, use_sde = use_sde)
 #model.learn(total_timesteps = total_timesteps)
 #custom_eval(model, env_id, algo, seed, "vanilla")

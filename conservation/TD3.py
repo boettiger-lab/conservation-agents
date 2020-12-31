@@ -13,7 +13,7 @@ outdir = "results"
 total_timesteps = 100000
 verbose = 0
 seed = 0
-tensorboard_log = None
+tensorboard_log="/var/log/tensorboard/single"
 
 # NB: See utils/hyperparams_opt.py for what is and isn't tuned for each model!
 # Manual -- defaults
@@ -53,7 +53,7 @@ custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["va
 
 
 ## Compare to vanilla default execution.  Vanilla is no action noise, but tuning always uses action noise(?)
-#model = TD3('MlpPolicy', env, verbose = 0, tensorboard_log="/var/log/tensorboard/single", 
+#model = TD3('MlpPolicy', env, verbose = 0, tensorboard_log = tensorboard_log, 
 #            seed = seed, use_sde = use_sde)
 #model.learn(total_timesteps = total_timesteps)
 #custom_eval(model, env_id, algo, seed, "vanilla")
