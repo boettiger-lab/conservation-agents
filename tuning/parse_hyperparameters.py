@@ -10,6 +10,9 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 
+from utils import linear_schedule
+
+
 import gym
 import gym_conservation
 import gym_fishing
@@ -55,12 +58,10 @@ def action_noise(hyper, algo, n_actions):
 
 
 def make_policy_kwargs(hyper, algo):
-  if hyper["params_net_arch"] == "medium":
-    net_arch = [256, 256]
-  elif hyper["params_net_arch"] == "big":
-    net_arch = [400, 300]
-  else:
-    net_arch = [64, 64]
+  NET_ARCH = {"small": [64,64],
+              "medium": [256, 256],
+              "big": [400,300]}
+  net_arch = NET_ARCH[hyper["params_net_arch"]]            
   if algo in ["a2c", "ppo"]:
      net_arch = {
         "small": [dict(pi=[64, 64], vf=[64, 64])],
@@ -106,7 +107,12 @@ def make_policy_kwargs(hyper, algo):
 def a2c(env, hyper, policy = "MlpPolicy", tensorboard_log = None, verbose = 1,
         seed = 0, use_sde = True, sde_sample_freq = -1, rms_prop_eps = 1e-05,
         device = "auto"):
-  
+   
+  lr_schedule = hyper["params_lr_schedule"]
+  learning_rate = hyper["params_lr"]
+  if lr_schedule == "linear":
+    learning_rate = linear_schedule(learning_rate)
+
   policy_kwargs = make_policy_kwargs(hyper, "a2c")
   model = A2C(policy, 
               env, 
@@ -116,7 +122,7 @@ def a2c(env, hyper, policy = "MlpPolicy", tensorboard_log = None, verbose = 1,
               use_sde = use_sde,
               sde_sample_freq = sde_sample_freq,
               rms_prop_eps = rms_prop_eps,
-              learning_rate = hyper["params_lr"],
+              learning_rate = learning_rate,
               n_steps = np.int(hyper["params_n_steps"]),
               gamma = hyper["params_gamma"],
               gae_lambda = hyper["params_gae_lambda"],
@@ -261,14 +267,14 @@ def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
   # evaluate agent
   custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
 
-def load_results(algo, env_id, seed = 0, verbose = 0, outdir = "results", log_dir = "logs"):
+def load_results(algo, env_id, seed = 0, verbose = 0, model = "results/ENV/ALGO/agent.zip", log_dir = "logs", outdir="results"):
   agent = MODEL[algo]
-  dest = os.path.join(outdir, env_id, algo)
-  model = agent.load(os.path.join(dest, "agent"))
+  model = model.replace("ENV", env_id).replace("ALGO", algo)
+  model_obj = agent.load(model)
   hyper = best_hyperpars(log_dir, env_id, algo)
 
   # evaluate agent
-  custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
+  custom_eval(model_obj, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
     
   
 # FIXME env.plot env.simulate are non-standard, should be done with render() loop  
