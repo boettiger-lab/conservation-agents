@@ -16,8 +16,37 @@ verbose = 0
 seed = 0
 tensorboard_log="/var/log/tensorboard/single"
 
+# NB: See utils/hyperparams_opt.py for what is and isn't tuned for each model!
+# Manual -- A2C defaults
+hyper = {
+"params_lr": 0.0003,
+"params_gamma": 0.99,
+"params_batch_size": 256,
+"params_buffer_size": 1000000,
+"params_learning_starts": 100,
+"params_train_freq": 1,
+"params_tau": 0.005,
+"params_log_std_init": -3,
+"params_net_arch": "small",
+"value": 0 # only in logs
+}
+
+## defaults, not tuned
+gradient_steps=1 # tuner sets equal to train_freq
+n_episodes_rollout=- 1
+action_noise=None
+optimize_memory_usage=False
+ent_coef='auto'
+target_update_interval=1
+target_entropy='auto'
+use_sde=False
+sde_sample_freq=- 1
+use_sde_at_warmup=False
+# Alternately, load tuned values  from log dir
+#hyper = best_hyperpars(log_dir, env_id, algo)
 # Override defaults
 use_sde = True
+
 
 env = gym.make(env_id)
 model = sac(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)
