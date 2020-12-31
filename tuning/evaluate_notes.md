@@ -25,3 +25,6 @@ not matching
 - conservation-v5: nearly optimal, ~ 800
 - fishing-v1: nearly optimal, close to tuning value (7.70 vs 7.75)
 
+
+* hyperparameter extraction failing: PPO, TD3
+* successful hyperpar extraction: SAC, DDPG, A2c
