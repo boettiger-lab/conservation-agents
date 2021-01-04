@@ -8,10 +8,10 @@ from parse_hyperparameters import best_hyperpars, custom_eval, a2c
 env_id = "conservation-v5"
 algo="a2c"
 outdir = "results"
-total_timesteps = 300000
-verbose = 1
+total_timesteps = 3000000
+verbose = 0
 seed = 0
-tensorboard_log = None
+tensorboard_log="/var/log/tensorboard/single"
 
 # NB: See utils/hyperparams_opt.py for what is and isn't tuned for each model!
 # Manual -- A2C defaults
@@ -48,7 +48,7 @@ custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["va
 
 
 ## Compare to vanilla default execution. 
-#model = A2C('MlpPolicy', env, verbose = 0, tensorboard_log="/var/log/tensorboard/single", 
+#model = A2C('MlpPolicy', env, verbose = 0, tensorboard_log=tensorboard_log, 
 #            seed = seed, use_sde = use_sde)
 #model.learn(total_timesteps = total_timesteps)
 #custom_eval(model, env_id, algo, seed, "vanilla")

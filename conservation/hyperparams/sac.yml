@@ -2,22 +2,13 @@
 conservation-v2:
   n_timesteps: !!float 50000
   policy: 'MlpPolicy'
-  learning_rate: !!float 3e-4
-  ent_coef: 0.1
   use_sde: True
-  optimize_memory_usage: True
-  policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"
+
   
 conservation-v3:
   n_timesteps: !!float 50000
   policy: 'MlpPolicy'
-  learning_rate: !!float 3e-4
-  ent_coef: 0.1
   use_sde: True
-  optimize_memory_usage: True
-  policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"
-  
-
 
 conservation-v5:
   n_timesteps: !!float 50000
@@ -28,3 +19,7 @@ conservation-v5:
   optimize_memory_usage: True
   policy_kwargs: "dict(log_std_init=-3.67, net_arch=[64, 64])"
 
+conservation-v6:
+  n_timesteps: !!float 300000
+  policy: 'MlpPolicy'
+  use_sde: True

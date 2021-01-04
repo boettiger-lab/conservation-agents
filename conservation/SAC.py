@@ -48,7 +48,7 @@ use_sde_at_warmup=False
 use_sde = True
 
 
-env = gym.make(env_id)
+env = gym.make(env_id, Tmax=1000)
 model = sac(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)
 model.learn(total_timesteps = total_timesteps)
 custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])

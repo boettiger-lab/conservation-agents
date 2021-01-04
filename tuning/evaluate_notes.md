@@ -1,13 +1,14 @@
 
 ## PPO
 
-- conservation-v5: fails.  446 (no action) vs tuned value 947
+- conservation-v5: success.  48.8 vs 51.3 tuned.  
+   (when not using `normalize: true` in hyperparameter yaml, see https://github.com/DLR-RM/rl-baselines3-zoo/issues/64#issuecomment-753956962)
 - fishing-v1
 
 ## A2C
 
-- conservation-v5: nearly matching tuned (823 vs 831). (crashes only at end, but sometimes steady)
-- fishing-v1: 
+- conservation-v5: nearly matching tuned 47.8 vs 51
+- fishing-v1: nearly matched, 7.70 vs 7.75
 
 ## DDPG
 
@@ -17,12 +18,12 @@
 ## TD3
 
 not matching
-- conservation-v5: fails; 0 action (~ 446 vs tuned at 855)
+- conservation-v5: fails; 0 action (~ 36 vs tuned at 49.7)
 - fishing-v1: fails, harvest all (0.75 vs 7.75)
 
 ## SAC
 
-- conservation-v5: nearly optimal, ~ 800
+- conservation-v5: nearly optimal, 47 vs 49.8
 - fishing-v1: nearly optimal, close to tuning value (7.70 vs 7.75)
 
 

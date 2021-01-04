@@ -49,11 +49,15 @@ def action_noise(hyper, algo, n_actions):
       hyper['params_train_freq'] = hyper['params_train_freq']
       hyper['params_gradient_steps'] = hyper['params_train_freq']
       hyper['params_n_episodes_rollout'] = -1
-  hyper["params_action_noise"] = NormalActionNoise(
+      
+  if hyper["params_noise_type"] == "normal":  
+    hyper["params_action_noise"] = NormalActionNoise(
       mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions))
-  if hyper["params_noise_type"] == "ornstein-uhlenbeck":
+  elif hyper["params_noise_type"] == "ornstein-uhlenbeck":
     hyper["params_action_noise"] = OrnsteinUhlenbeckActionNoise(
         mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions))
+  else:
+    hyper["params_action_noise"] = None
   return hyper
 
 
@@ -217,10 +221,12 @@ def sac(env, hyper, policy = "MlpPolicy",
 
 def td3(env, hyper, policy = "MlpPolicy", 
         verbose = 0, tensorboard_log = None, seed = 0, 
-        use_sde = True, device = "auto"):
+        use_sde = True, learning_starts = 100, device = "auto"):
  
   policy_kwargs = make_policy_kwargs(hyper, "td3")
   hyper = action_noise(hyper, "td3", n_actions = env.action_space.shape[0])
+  
+  #optimize_memory_usage=False, policy_delay=2, target_policy_noise=0.2, target_noise_clip=0.5, 
   
   model = TD3('MlpPolicy', env, 
               verbose = verbose, 
@@ -234,6 +240,7 @@ def td3(env, hyper, policy = "MlpPolicy",
               train_freq = np.int(hyper['params_train_freq']),
               gradient_steps = np.int(hyper['params_train_freq']),
               n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
+              learning_starts = learning_starts,
               policy_kwargs=policy_kwargs,
               device = device)
   return model

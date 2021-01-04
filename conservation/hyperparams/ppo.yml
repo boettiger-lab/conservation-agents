@@ -26,3 +26,8 @@ conservation-v5:
   n_timesteps: !!float 3e5
   policy: 'MlpPolicy'
 
+conservation-v6:
+  n_envs: 4
+  use_sde: True
+  policy: 'MlpPolicy'
+  n_timesteps: !!float 300000

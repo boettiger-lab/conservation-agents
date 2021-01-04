@@ -1,0 +1,27 @@
+!!python/object/apply:collections.OrderedDict
+- - - ent_coef
+    - 3.0001446473553074e-07
+  - - gae_lambda
+    - 0.8
+  - - gamma
+    - 0.995
+  - - learning_rate
+    - 0.012486195510232303
+  - - max_grad_norm
+    - 0.7
+  - - n_envs
+    - 4
+  - - n_steps
+    - 128
+  - - n_timesteps
+    - 300000.0
+  - - normalize_advantage
+    - false
+  - - policy
+    - MlpPolicy
+  - - use_rms_prop
+    - false
+  - - use_sde
+    - true
+  - - vf_coef
+    - 0.20033289618388683

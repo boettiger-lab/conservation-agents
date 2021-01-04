@@ -21,14 +21,35 @@ conservation-v3:
   use_sde: True
 
 
-
-## Adapted from MountainCarContinuous-v0
 conservation-v5:
-  # env_wrapper: utils.wrappers.PlotActionWrapper
   n_envs: 4
-  n_steps: 1e6
   n_timesteps: !!float 3e5
   policy: 'MlpPolicy'
   use_sde: True
+#  activation_fn: 'relu'
+  ent_coef: 3.0001446473553074e-07
+  gae_lambda: 0.8
+  gamma: 0.995
+#  log_std_init: -2.4585859800053926
+#  lr: 0.012486195510232303
+#  lr_schedule: 'linear'
+  learning_rate: lin_0.012486195510232303
+  max_grad_norm: 0.7
+  n_steps: 128
+#  net_arch: 'medium'
+  normalize_advantage: False
+#  ortho_init: False
+  use_rms_prop: False
+  vf_coef: 0.20033289618388683
+  policy_kwargs: "dict(log_std_init=-2.4585859800053926, net_arch=[dict(pi=[256, 256], vf=[256, 256])], ortho_init=False, activation_fn=nn.ReLU)"
+
+conservation-v6:
+  n_envs: 4
+  policy: 'MlpPolicy'
+  use_sde: True
+  n_timesteps: !!float 300000
+
+
+
 
 
