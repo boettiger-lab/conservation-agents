@@ -9,6 +9,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
+from stable_baselines3.common.vec_env import VecNormalize
 
 from utils import linear_schedule
 
@@ -259,16 +260,24 @@ AGENT = {"ppo": ppo,
 
 def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
           tensorboard_log = None, seed = 0, verbose = 0,
-          n_envs = 4, outdir = "results", use_sde = True):
+          n_envs = 4, outdir = "results", use_sde = True, i = 0):
   
   # create env    
   if(algo in ["a2c", "ppo"]):
     env = make_vec_env(env_id, n_envs = n_envs, seed = seed)
   else:
-    env = gym.make(env_id)
+    env = make_vec_env(env_id, n_envs = 1, seed = seed)
   # Create and train agent
   agent = AGENT[algo]
-  hyper = best_hyperpars(log_dir, env_id, algo)
+  hyper = best_hyperpars(log_dir, env_id, algo, i = i)
+  print("")
+  print(algo, env_id)
+  print(hyper)
+  
+  # Unless turned off in hyperparameters.yml
+  env = VecNormalize(env, gamma = hyper["params_gamma"])
+
+  
   model = agent(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)
   model.learn(total_timesteps = total_timesteps)
   # evaluate agent
