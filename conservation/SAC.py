@@ -1,6 +1,6 @@
 from stable_baselines3 import SAC, TD3, A2C, PPO, DDPG, DQN
 from stable_baselines3.common.env_util import make_vec_env
-
+from stable_baselines3.common.vec_env import VecNormalize
 import sys
 sys.path.append("../tuning")
 from parse_hyperparameters import best_hyperpars, custom_eval, sac
@@ -11,24 +11,25 @@ import gym_conservation
 env_id = "conservation-v6"
 algo="sac"
 outdir = "results"
-total_timesteps = 1e7
+
+total_timesteps = 1500000
 verbose = 0
 seed = 0
 tensorboard_log="/var/log/tensorboard/single"
-
+log_dir = "logs"
 # NB: See utils/hyperparams_opt.py for what is and isn't tuned for each model!
 # Manual -- A2C defaults
 hyper = {
-'params_batch_size':                                  256,
-'params_buffer_size':                               10000,
-'params_gamma':                                    0.9999,
-'params_learning_starts':                           10000,
-'params_log_std_init':                           0.268563,
-'params_lr':                                  0.000292858,
-'params_net_arch':                               'medium',
-'params_tau':                                       0.001,
-'params_train_freq':                                   64,
-"value": 0 # only in logs
+"params_batch_size":                                  256,
+"params_buffer_size":                               10000,
+"params_gamma":                                    0.9999,
+"params_learning_starts":                           10000,
+"params_log_std_init":                           0.600596,
+"params_lr":                                  0.000958776,
+"params_net_arch":                                    "big",
+"params_tau":                                       0.005,
+"params_train_freq":                                   64,
+"value": 161.096 # only in logs
 }
 
 ## defaults, not tuned
@@ -51,6 +52,7 @@ use_sde = True
 env = gym.make(env_id)
 model = sac(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)
 model.learn(total_timesteps = total_timesteps)
+# eval does not use normalized env, so it reports true rewards
 custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
 
 

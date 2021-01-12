@@ -27,14 +27,11 @@ hyper = {
 'params_vf_coef':                                0.261185,
 'value': 51.3641}
  
-# Alternately, load tuned values  from log dir
-# 0 for best, 1 for second-best, etc
-
-#hyper = best_hyperpars("logs", env_id, algo, 0)
 
 env = make_vec_env(env_id, n_envs = 4, seed = seed)
-model = ppo(env, hyper, 'MlpPolicy', verbose = 0, tensorboard_log = tensorboard_log, seed = seed, use_sde = True, device="cpu")
-model.learn(total_timesteps = 300000)
+model = ppo(env, hyper, 'MlpPolicy', verbose = 0, tensorboard_log = tensorboard_log,
+            seed = seed, use_sde = True, device="cpu")
+model.learn(total_timesteps = 60000)
 custom_eval(model, env_id, algo, seed = seed, outdir = "results", value = hyper["value"])
 
 
