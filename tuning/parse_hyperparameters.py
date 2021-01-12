@@ -275,7 +275,7 @@ def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
   print(hyper)
   
   # Unless turned off in hyperparameters.yml
-  env = VecNormalize(env, gamma = hyper["params_gamma"])
+  # env = VecNormalize(env, gamma = hyper["params_gamma"])
 
   
   model = agent(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)

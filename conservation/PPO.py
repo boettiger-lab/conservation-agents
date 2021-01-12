@@ -5,55 +5,38 @@ import sys
 sys.path.append("../tuning")
 from parse_hyperparameters import best_hyperpars, custom_eval, ppo
 
-env_id = "conservation-v5"
+env_id = "conservation-v6"
 algo="ppo"
 seed = None
 tensorboard_log="/var/log/tensorboard/single"
  
-hyper = {'params_batch_size': 32, 
+hyper = {'params_batch_size': 128, 
          'params_n_steps': 32,
-         'params_gamma': 0.98,
-         'params_lr': 8.225772986391458e-05,
-         'params_ent_coef': 4.276944290929924e-07, 
-         'params_clip_range': 0.2,
-         'params_n_epochs': 10,
-         'params_gae_lambda': 0.98, 
-         'params_max_grad_norm': 0.6,
-         'params_vf_coef': 0.3734414549850671, 
+         'params_gamma': 0.999,
+         'params_lr': 0.000929325,
+         'params_ent_coef': 1.52337e-07, 
+         'params_clip_range': 0.4,
+         'params_n_epochs': 20,
+         'params_gae_lambda': 0.99, 
+         'params_max_grad_norm': 0.5,
+         'params_vf_coef': 0.261185, 
          'params_net_arch': 'medium',
-         'params_log_std_init': -3.363947481408501, 
-         'params_sde_sample_freq': 32, 
+         'params_log_std_init': -2.82008, 
+         'params_sde_sample_freq': 64, 
          'params_activation_fn': 'relu',
-         'value': 50.773604}
-         # Best is trial 5 with value: 50.773604
-# NB: See utils/hyperparams_opt.py for what is and isn't tuned for each model!
-# Manual -- defaults
-# hyper = {
-# "params_n_steps": 1024,
-# "params_batch_size": 64,
-# "params_gamma": 0.9999,
-# "params_lr": 0.03,
-# "params_ent_coef": 4e-08,
-# "params_clip_range": 0.1,
-# "params_n_epochs": 20,
-# "params_gae_lambda": 0.95,
-# "params_max_grad_norm": 0.8,
-# "params_vf_coef": 0.94,
-# "params_sde_sample_freq": -1,
-# "params_activation_fn": "relu",
-# "params_log_std_init": -2.6,
-# "params_net_arch": "small",
-# "params_ortho_init": True,
-# "value": 0 # only in logs
-# }
+         'value': 51.3641}
+         # Best is trial 32 with value: 51.3641
+
 
 # Alternately, load tuned values  from log dir
 # 0 for best, 1 for second-best, etc
-#hyper = best_hyperpars("logs", env_id, algo, 1)
+#hyper = best_hyperpars("logs", env_id, algo, 0)
+print(hyper)
 
 env = make_vec_env(env_id, n_envs = 4, seed = seed)
-model = ppo(env, hyper, 'MlpPolicy', verbose = 0, tensorboard_log = tensorboard_log, seed = seed, use_sde = True, device="cpu")
-model.learn(total_timesteps = 300000)
+model = ppo(env, hyper, 'MlpPolicy', verbose = 0, tensorboard_log = tensorboard_log,
+            seed = seed, use_sde = True, device="cpu")
+model.learn(total_timesteps = 60000)
 custom_eval(model, env_id, algo, seed = seed, outdir = "results", value = hyper["value"])
 
 

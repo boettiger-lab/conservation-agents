@@ -5,15 +5,15 @@ import sys
 sys.path.append("../tuning")
 from parse_hyperparameters import best_hyperpars, custom_eval, td3
 
-import gym, gym_fishing
-
-env_id = "conservation-v5"  #"fishing-v1"
+import gym, gym_conservation
+env_id = "conservation-v6"  #"fishing-v1"
 algo = "td3"
 outdir = "results"
-total_timesteps = 100000
+total_timesteps = 300000
 verbose = 0
 seed = 0
 tensorboard_log="/var/log/tensorboard/single"
+log_dir = "logs"
 
 # NB: See utils/hyperparams_opt.py for what is and isn't tuned for each model!
 # Manual -- defaults
@@ -33,7 +33,8 @@ hyper = {
 }
 
 # Alternately, load tuned values  from log dir
-#hyper = best_hyperpars(log_dir, env_id, algo)
+hyper = best_hyperpars(log_dir, env_id, algo)
+print(hyper)
 
 # Default parameters not tuned
 learning_starts=100
