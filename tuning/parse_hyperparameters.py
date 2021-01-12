@@ -298,21 +298,25 @@ def custom_eval(model, env_id, algo, seed = 0, outdir="results", value = np.nan)
   # eval env
   env = Monitor(gym.make(env_id))
   mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=100)
-  
-  ## Simulate
-  np.random.seed(seed)
-  df = env.simulate(model, reps=10)
-  policy = env.policyfn(model, reps=10)
-  
-  ## Save and print
   print("algo:", algo, "env:", env_id, "mean reward:", mean_reward,
         "std:", std_reward, "tuned_value:", value)
+
         
   dest = os.path.join(outdir, env_id, algo)
   dir_create(dest)
   model.save(os.path.join(dest, "agent"))
-  df.to_csv(os.path.join(dest, "sim.csv"))
-  env.plot(df, os.path.join(dest, "sim.png"))
-  env.plot_policy(policy, os.path.join(dest, "policy.png"))
+  
+  ## Simulate
+  np.random.seed(seed)
+  if "simulate" in dir(env):
+    df = env.simulate(model, reps=10)
+    df.to_csv(os.path.join(dest, "sim.csv"))
+    env.plot(df, os.path.join(dest, "sim.png"))
+  if "policyfn" in dir(env):
+    policy = env.policyfn(model, reps=10)
+    env.plot_policy(policy, os.path.join(dest, "policy.png"))  
+
+
+  
   
 
