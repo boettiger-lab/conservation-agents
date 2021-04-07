@@ -9,6 +9,7 @@ import gym_conservation
 def main():  # noqa: C901
     parser = argparse.ArgumentParser()
     parser.add_argument("--env", help="environment ID", type=str, default="CartPole-v1")
+    parser.add_argument("--eval_env", help="eval environment ID", type=str, default=None)
     parser.add_argument("-f", "--folder", help="Log folder", type=str, default="logs")
     parser.add_argument("--algo", help="RL Algorithm", default="ppo", type=str, required=False)
     parser.add_argument("-n", "--n-timesteps", help="number of timesteps", default=100000, type=int)
@@ -21,6 +22,7 @@ def main():  # noqa: C901
     args = parser.parse_args()
     train_from_logs(args.algo, 
                     args.env, 
+                    eval_env = args.eval_env,
                     log_dir = args.folder, 
                     total_timesteps = args.n_timesteps,
                     tensorboard_log = args.tensorboard_log,

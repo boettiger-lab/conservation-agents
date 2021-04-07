@@ -45,7 +45,7 @@ use_sde_at_warmup=False
 # Alternately, load tuned values  from log dir
 #hyper = best_hyperpars(log_dir, env_id, algo)
 
-# Overrides in hyperparams/a2c.yml
+# Overrides in hyperparams/sac.yml
 use_sde = True
 
 env = gym.make(env_id)

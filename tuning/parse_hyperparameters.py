@@ -258,10 +258,13 @@ AGENT = {"ppo": ppo,
          "ddpg": ddpg,
          "td3": td3}
 
-def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
+def train_from_logs(algo, env_id, eval_env = None, log_dir = "logs", total_timesteps = 300000,
           tensorboard_log = None, seed = 0, verbose = 0,
           n_envs = 4, outdir = "results", use_sde = True, i = 0):
   
+  
+  if eval_env is None:
+    eval_env = env_id
   # create env    
   if(algo in ["a2c", "ppo"]):
     env = make_vec_env(env_id, n_envs = n_envs, seed = seed)
@@ -281,7 +284,7 @@ def train_from_logs(algo, env_id, log_dir = "logs", total_timesteps = 300000,
   model = agent(env, hyper, 'MlpPolicy', verbose = verbose, tensorboard_log = tensorboard_log, seed = seed, use_sde = use_sde)
   model.learn(total_timesteps = total_timesteps)
   # evaluate agent
-  custom_eval(model, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
+  custom_eval(model, eval_env, algo, seed = seed, outdir = outdir, value = hyper["value"])
 
 def load_results(algo, env_id, seed = 0, verbose = 0, model = "results/ENV/ALGO/agent.zip", log_dir = "logs", outdir="results"):
   agent = MODEL[algo]
@@ -291,7 +294,9 @@ def load_results(algo, env_id, seed = 0, verbose = 0, model = "results/ENV/ALGO/
 
   # evaluate agent
   custom_eval(model_obj, env_id, algo, seed = seed, outdir = outdir, value = hyper["value"])
-    
+
+def has_method(o, name):
+    return callable(getattr(o, name, None))    
   
 # FIXME env.plot env.simulate are non-standard, should be done with render() loop  
 def custom_eval(model, env_id, algo, seed = 0, outdir="results", value = np.nan):
@@ -308,11 +313,11 @@ def custom_eval(model, env_id, algo, seed = 0, outdir="results", value = np.nan)
   
   ## Simulate
   np.random.seed(seed)
-  if "simulate" in dir(env):
+  if has_method(env, "simulate"):
     df = env.simulate(model, reps=10)
     df.to_csv(os.path.join(dest, "sim.csv"))
     env.plot(df, os.path.join(dest, "sim.png"))
-  if "policyfn" in dir(env):
+  if has_method(env, "policyfn"):
     policy = env.policyfn(model, reps=10)
     env.plot_policy(policy, os.path.join(dest, "policy.png"))  
 

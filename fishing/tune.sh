@@ -17,8 +17,8 @@ CUDA_VISIBLE_DEVICES="1" python ../tuning/zoo_train.py   --algo a2c --env fishin
   --storage sqlite:///tuning.db   --study-name a2c-fishingv1 &
 
 CUDA_VISIBLE_DEVICES="1" python ../tuning/zoo_train.py   --algo ppo --env fishing-v1 -n 300000 -optimize  \
-  --n-trials 4 --n-jobs 4 --sampler random --pruner median \
-  --storage sqlite:///tuning.db   --study-name ppo-fishingv1_nonorm &
+  --n-trials 4 --n-jobs 4 --sampler tpe --pruner median \
+  --storage sqlite:///tuning.db   --study-name ppo-fishingv1 &
 
 CUDA_VISIBLE_DEVICES="1" python ../tuning/zoo_train.py   --algo ddpg --env fishing-v1 -n 300000 -optimize \
   --n-trials 100 --n-jobs 4 --sampler random --pruner median   \
