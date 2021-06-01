@@ -44,13 +44,10 @@ def action_noise(hyper, algo, n_actions):
   Configure Action Noise from hyperparameter logs
   """
   if hyper['params_episodic']:
-      hyper['params_n_episodes_rollout'] = 1
-      hyper['params_train_freq'], hyper['params_gradient_steps'] = -1, -1
+      hyper['params_train_freq'] = (1, "episode") 
   else:
-      hyper['params_train_freq'] = hyper['params_train_freq']
-      hyper['params_gradient_steps'] = hyper['params_train_freq']
-      hyper['params_n_episodes_rollout'] = -1
-      
+      hyper['params_train_freq'] = (hyper['params_train_freq'], "steps")
+
   if hyper["params_noise_type"] == "normal":  
     hyper["params_action_noise"] = NormalActionNoise(
       mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions))
@@ -189,8 +186,8 @@ def ddpg(env, hyper, policy = "MlpPolicy",
               buffer_size = np.int(hyper['params_buffer_size']),
               action_noise = hyper['params_action_noise'],
               train_freq = np.int(hyper['params_train_freq']),
-              gradient_steps = np.int(hyper['params_train_freq']),
-              n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
+              # gradient_steps = np.int(hyper['params_train_freq']),
+              # n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
               policy_kwargs=policy_kwargs,
               device = device)
   return model
@@ -240,7 +237,7 @@ def td3(env, hyper, policy = "MlpPolicy",
               action_noise = hyper['params_action_noise'],
               train_freq = np.int(hyper['params_train_freq']),
               gradient_steps = np.int(hyper['params_train_freq']),
-              n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
+              #n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
               learning_starts = learning_starts,
               policy_kwargs=policy_kwargs,
               device = device)
