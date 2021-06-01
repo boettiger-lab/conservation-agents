@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES="" python ../tuning/zoo_train.py --algo a2c --env conservation-v5

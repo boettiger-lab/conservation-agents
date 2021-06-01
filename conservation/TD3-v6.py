@@ -38,6 +38,9 @@ model.learn(total_timesteps = total_timesteps)
 # Simulate a run with the trained model, visualize result
 df = env.simulate(model, reps=5)
 env.plot(df, "td3_sim.png")
+model.save("td3-v6")
+
+env.plot_policy(df, "td3_policy.png")
 
 ##Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=500)

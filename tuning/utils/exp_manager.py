@@ -1,6 +1,4 @@
 import argparse
-import csv
-import json
 import os
 import time
 import warnings
@@ -15,16 +13,17 @@ import yaml
 from optuna.integration.skopt import SkoptSampler
 from optuna.pruners import BasePruner, MedianPruner, SuccessiveHalvingPruner
 from optuna.samplers import BaseSampler, RandomSampler, TPESampler
+
+# For using HER with GoalEnv
+from stable_baselines3 import HerReplayBuffer  # noqa: F401
 from stable_baselines3.common.base_class import BaseAlgorithm
 from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, EvalCallback
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
-from stable_baselines3.common.preprocessing import is_image_space
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 from stable_baselines3.common.sb2_compat.rmsprop_tf_like import RMSpropTFLike  # noqa: F401
 from stable_baselines3.common.utils import constant_fn
-from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv, VecFrameStack, VecNormalize, VecTransposeImage
-from stable_baselines3.common.vec_env.obs_dict_wrapper import ObsDictWrapper
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecEnv, VecFrameStack, VecNormalize, VecTransposeImage
 
 # For custom activation fn
 from torch import nn as nn  # noqa: F401
@@ -73,6 +72,8 @@ class ExperimentManager(object):
         log_interval: int = 0,
         save_replay_buffer: bool = False,
         verbose: int = 1,
+        vec_env_type: str = "dummy",
+        n_eval_envs: int = 1,
     ):
         super(ExperimentManager, self).__init__()
         self.algo = algo
@@ -87,11 +88,17 @@ class ExperimentManager(object):
         self.frame_stack = None
         self.seed = seed
 
+        self.vec_env_class = {"dummy": DummyVecEnv, "subproc": SubprocVecEnv}[vec_env_type]
+
+        self.vec_env_kwargs = {}
+        # self.vec_env_kwargs = {} if vec_env_type == "dummy" else {"start_method": "fork"}
+
         # Callbacks
         self.callbacks = []
         self.save_freq = save_freq
         self.eval_freq = eval_freq
         self.n_eval_episodes = n_eval_episodes
+        self.n_eval_envs = n_eval_envs
 
         self.n_envs = 1  # it will be updated when reading hyperparams
         self.n_actions = None  # For DDPG/TD3 action noise objects
@@ -146,7 +153,7 @@ class ExperimentManager(object):
         # Create env to have access to action space for action noise
         env = self.create_envs(self.n_envs, no_log=False)
 
-        self._hyperparams = self._preprocess_action_noise(hyperparams, env)
+        self._hyperparams = self._preprocess_action_noise(hyperparams, saved_hyperparams, env)
 
         if self.continue_training:
             model = self._load_pretrained_agent(self._hyperparams, env)
@@ -183,7 +190,10 @@ class ExperimentManager(object):
             pass
         finally:
             # Release resources
-            model.env.close()
+            try:
+                model.env.close()
+            except EOFError:
+                pass
 
     def save_trained_model(self, model: BaseAlgorithm) -> None:
         """
@@ -282,15 +292,6 @@ class ExperimentManager(object):
             del hyperparams["normalize"]
         return hyperparams
 
-    def _preprocess_her_model_class(self, hyperparams: Dict[str, Any]) -> Dict[str, Any]:
-        # HER is only a wrapper around an algo
-        if self.algo == "her":
-            model_class = hyperparams["model_class"]
-            assert model_class in {"sac", "ddpg", "dqn", "td3", "tqc"}, f"{model_class} is not compatible with HER"
-            # Retrieve the model class
-            hyperparams["model_class"] = ALGOS[hyperparams["model_class"]]
-        return hyperparams
-
     def _preprocess_hyperparams(
         self, hyperparams: Dict[str, Any]
     ) -> Tuple[Dict[str, Any], Optional[Callable], List[BaseCallback]]:
@@ -299,9 +300,12 @@ class ExperimentManager(object):
         if self.verbose > 0:
             print(f"Using {self.n_envs} environments")
 
-        # Convert model class string to an object if needed (when using HER)
-        hyperparams = self._preprocess_her_model_class(hyperparams)
+        # Convert schedule strings to objects
         hyperparams = self._preprocess_schedules(hyperparams)
+
+        # Pre-process train_freq
+        if "train_freq" in hyperparams and isinstance(hyperparams["train_freq"], list):
+            hyperparams["train_freq"] = tuple(hyperparams["train_freq"])
 
         # Should we overwrite the number of timesteps?
         if self.n_timesteps > 0:
@@ -313,11 +317,11 @@ class ExperimentManager(object):
         # Pre-process normalize config
         hyperparams = self._preprocess_normalization(hyperparams)
 
-        # Pre-process policy keyword arguments
-        if "policy_kwargs" in hyperparams.keys():
-            # Convert to python object if needed
-            if isinstance(hyperparams["policy_kwargs"], str):
-                hyperparams["policy_kwargs"] = eval(hyperparams["policy_kwargs"])
+        # Pre-process policy/buffer keyword arguments
+        # Convert to python object if needed
+        for kwargs_key in {"policy_kwargs", "replay_buffer_class", "replay_buffer_kwargs"}:
+            if kwargs_key in hyperparams.keys() and isinstance(hyperparams[kwargs_key], str):
+                hyperparams[kwargs_key] = eval(hyperparams[kwargs_key])
 
         # Delete keys so the dict can be pass to the model constructor
         if "n_envs" in hyperparams.keys():
@@ -340,11 +344,11 @@ class ExperimentManager(object):
 
         return hyperparams, env_wrapper, callbacks
 
-    def _preprocess_action_noise(self, hyperparams: Dict[str, Any], env: VecEnv) -> Dict[str, Any]:
-        # Special case for HER
-        algo = hyperparams["model_class"] if self.algo == "her" else self.algo
-        # Parse noise string for DDPG and SAC
-        if algo in ["ddpg", "sac", "td3", "tqc", "ddpg"] and hyperparams.get("noise_type") is not None:
+    def _preprocess_action_noise(
+        self, hyperparams: Dict[str, Any], saved_hyperparams: Dict[str, Any], env: VecEnv
+    ) -> Dict[str, Any]:
+        # Parse noise string
+        if self.algo in ["ddpg", "sac", "td3", "tqc"] and hyperparams.get("noise_type") is not None:
             noise_type = hyperparams["noise_type"].strip()
             noise_std = hyperparams["noise_std"]
 
@@ -398,7 +402,7 @@ class ExperimentManager(object):
 
             save_vec_normalize = SaveVecNormalizeCallback(save_freq=1, save_path=self.params_path)
             eval_callback = EvalCallback(
-                self.create_envs(1, eval_env=True),
+                self.create_envs(self.n_eval_envs, eval_env=True),
                 callback_on_new_best=save_vec_normalize,
                 best_model_save_path=self.save_path,
                 n_eval_episodes=self.n_eval_episodes,
@@ -412,6 +416,10 @@ class ExperimentManager(object):
     @staticmethod
     def is_atari(env_id: str) -> bool:
         return "AtariEnv" in gym.envs.registry.env_specs[env_id].entry_point
+
+    @staticmethod
+    def is_bullet(env_id: str) -> bool:
+        return "pybullet_envs" in gym.envs.registry.env_specs[env_id].entry_point
 
     @staticmethod
     def is_robotics_env(env_id: str) -> bool:
@@ -456,29 +464,6 @@ class ExperimentManager(object):
             env = VecNormalize(env, **local_normalize_kwargs)
         return env
 
-    def _log_success_rate(self, env: VecEnv) -> None:
-        # Hack to log the success rate
-        # TODO: allow to pass keyword arguments to the Monitor class
-        monitor: gym.Env = env.envs[0]
-        # unwrap
-        while not isinstance(monitor, Monitor):
-            monitor = monitor.env
-
-        if monitor.file_handler is None:
-            return
-
-        filename = monitor.file_handler.name
-        monitor.file_handler.close()
-
-        monitor.info_keywords = ("is_success",)
-        monitor.file_handler = open(filename, "wt")
-        monitor.file_handler.write(
-            "#%s\n" % json.dumps({"t_start": monitor.t_start, "env_id": monitor.env.spec and monitor.env.spec.id})
-        )
-        monitor.logger = csv.DictWriter(monitor.file_handler, fieldnames=("r", "l", "t") + monitor.info_keywords)
-        monitor.logger.writeheader()
-        monitor.file_handler.flush()
-
     def create_envs(self, n_envs: int, eval_env: bool = False, no_log: bool = False) -> VecEnv:
         """
         Create the environment and wrap it if necessary.
@@ -492,8 +477,13 @@ class ExperimentManager(object):
         # Do not log eval env (issue with writing the same file)
         log_dir = None if eval_env or no_log else self.save_path
 
-        # env = SubprocVecEnv([make_env(env_id, i, self.seed) for i in range(n_envs)])
+        monitor_kwargs = {}
+        # Special case for GoalEnvs: log success rate too
+        if "Neck" in self.env_id or self.is_robotics_env(self.env_id) or "parking-v0" in self.env_id:
+            monitor_kwargs = dict(info_keywords=("is_success",))
+
         # On most env, SubprocVecEnv does not help and is quite memory hungry
+        # therefore we use DummyVecEnv by default
         env = make_vec_env(
             env_id=self.env_id,
             n_envs=n_envs,
@@ -501,13 +491,10 @@ class ExperimentManager(object):
             env_kwargs=self.env_kwargs,
             monitor_dir=log_dir,
             wrapper_class=self.env_wrapper,
-            vec_env_cls=DummyVecEnv,
-            vec_env_kwargs=None,
+            vec_env_cls=self.vec_env_class,
+            vec_env_kwargs=self.vec_env_kwargs,
+            monitor_kwargs=monitor_kwargs,
         )
-
-        # Special case for GoalEnvs: log success rate too
-        if "Neck" in self.env_id or self.is_robotics_env(self.env_id):
-            self._log_success_rate(env)
 
         # Wrap the env into a VecNormalize wrapper if needed
         # and load saved statistics when present
@@ -522,16 +509,10 @@ class ExperimentManager(object):
 
         # Wrap if needed to re-order channels
         # (switch from channel last to channel first convention)
-        if is_image_space(env.observation_space):
+        if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
             if self.verbose > 0:
                 print("Wrapping into a VecTransposeImage")
             env = VecTransposeImage(env)
-
-        # check if wrapper for dict support is needed
-        if self.algo == "her":
-            if self.verbose > 0:
-                print("Wrapping into a ObsDictWrapper")
-            env = ObsDictWrapper(env)
 
         return env
 
@@ -557,11 +538,8 @@ class ExperimentManager(object):
 
         if os.path.exists(replay_buffer_path):
             print("Loading replay buffer")
-            if self.algo == "her":
-                # if we use HER we have to add an additional argument
-                model.load_replay_buffer(replay_buffer_path, self.truncate_last_trajectory)
-            else:
-                model.load_replay_buffer(replay_buffer_path)
+            # `truncate_last_traj` will be taken into account only if we use HER replay buffer
+            model.load_replay_buffer(replay_buffer_path, truncate_last_traj=self.truncate_last_trajectory)
         return model
 
     def _create_sampler(self, sampler_method: str) -> BaseSampler:
@@ -596,12 +574,12 @@ class ExperimentManager(object):
 
         kwargs = self._hyperparams.copy()
 
-        trial.model_class = None
-        if self.algo == "her":
-            trial.model_class = self._hyperparams.get("model_class", None)
-
         # Hack to use DDPG/TD3 noise sampler
         trial.n_actions = self.n_actions
+        # Hack when using HerReplayBuffer
+        trial.using_her_replay_buffer = kwargs.get("replay_buffer_class") == HerReplayBuffer
+        if trial.using_her_replay_buffer:
+            trial.her_kwargs = kwargs.get("replay_buffer_kwargs", {})
         # Sample candidate hyperparameters
         kwargs.update(HYPERPARAMS_SAMPLER[self.algo](trial))
 

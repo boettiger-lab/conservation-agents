@@ -23,7 +23,9 @@ conservation-v5:
   noise_std: 0.5
 
 conservation-v6:
-  n_timesteps: !!float 300000
+  n_timesteps: !!float 3000000
+  noise_type: 'ornstein-uhlenbeck'
+  noise_std: 0.5
   policy: 'MlpPolicy'
-
+  gamma: 0.995
 
