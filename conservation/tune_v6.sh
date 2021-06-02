@@ -10,7 +10,7 @@ CUDA_VISIBLE_DEVICES="0" python ../tuning/zoo_train.py   --algo ppo --env conser
   --storage sqlite:///rl_intro.db   --study-name ppo-cons-v6 &
 
 CUDA_VISIBLE_DEVICES="1" python ../tuning/zoo_train.py   --algo td3 --env conservation-v6 -n 6000000 -optimize \
-  --n-trials 60 --n-jobs 2 --sampler skopt --pruner median \
+  --n-trials 60 --n-jobs 2 --pruner median \
   --storage sqlite:///rl_intro.db   --study-name td3-cons-v6 &
 
 CUDA_VISIBLE_DEVICES="1" python ../tuning/zoo_train.py   --algo ddpg --env conservation-v6 -n 3000000 -optimize \
