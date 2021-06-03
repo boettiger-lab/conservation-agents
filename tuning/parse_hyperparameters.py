@@ -44,9 +44,9 @@ def action_noise(hyper, algo, n_actions):
   Configure Action Noise from hyperparameter logs
   """
   if hyper['params_episodic']:
-      hyper['params_train_freq'] = (1, "episode") 
+      hyper['params_train_freq'] = (1, "episode")
   else:
-      hyper['params_train_freq'] = (hyper['params_train_freq'], "steps")
+      hyper['params_train_freq'] = (int(hyper['params_train_freq']), "step")
 
   if hyper["params_noise_type"] == "normal":  
     hyper["params_action_noise"] = NormalActionNoise(
@@ -185,7 +185,7 @@ def ddpg(env, hyper, policy = "MlpPolicy",
               batch_size = np.int(hyper['params_batch_size']),            
               buffer_size = np.int(hyper['params_buffer_size']),
               action_noise = hyper['params_action_noise'],
-              train_freq = np.int(hyper['params_train_freq']),
+              train_freq = hyper['params_train_freq'],
               # gradient_steps = np.int(hyper['params_train_freq']),
               # n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
               policy_kwargs=policy_kwargs,
@@ -311,7 +311,7 @@ def custom_eval(model, env_id, algo, seed = 0, outdir="results", value = np.nan)
   ## Simulate
   np.random.seed(seed)
   if has_method(env, "simulate"):
-    df = env.simulate(model, reps=10)
+    df = env.simulate(model, reps=50)
     df.to_csv(os.path.join(dest, "sim.csv"))
     env.plot(df, os.path.join(dest, "sim.png"))
   if has_method(env, "policyfn"):
