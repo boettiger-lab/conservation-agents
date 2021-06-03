@@ -5,16 +5,15 @@ import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import gym
+import stable_baselines3 as sb3  # noqa: F401
+import torch as th  # noqa: F401
 import yaml
-from stable_baselines3 import A2C, DDPG, DQN, HER, PPO, SAC, TD3
+from sb3_contrib import QRDQN, TQC
+from stable_baselines3 import A2C, DDPG, DQN, PPO, SAC, TD3
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.sb2_compat.rmsprop_tf_like import RMSpropTFLike  # noqa: F401
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecEnv, VecFrameStack, VecNormalize
-
-try:
-    from sb3_contrib import TQC  # pytype: disable=import-error
-except ImportError:
-    TQC = None
 
 # For custom activation fn
 from torch import nn as nn  # noqa: F401 pylint: disable=unused-import
@@ -24,13 +23,12 @@ ALGOS = {
     "ddpg": DDPG,
     "dqn": DQN,
     "ppo": PPO,
-    "her": HER,
     "sac": SAC,
     "td3": TD3,
+    # SB3 Contrib,
+    "qrdqn": QRDQN,
+    "tqc": TQC,
 }
-
-if TQC is not None:
-    ALGOS["tqc"] = TQC
 
 
 def flatten_dict_observations(env: gym.Env) -> gym.Env:
@@ -193,6 +191,9 @@ def create_test_env(
     :param env_kwargs: Optional keyword argument to pass to the env constructor
     :return:
     """
+    # Avoid circular import
+    from utils.exp_manager import ExperimentManager
+
     # Create the environment and wrap it if necessary
     env_wrapper = get_wrapper_class(hyperparams)
 
@@ -203,7 +204,7 @@ def create_test_env(
 
     vec_env_kwargs = {}
     vec_env_cls = DummyVecEnv
-    if n_envs > 1 or "Bullet" in env_id:
+    if n_envs > 1 or (ExperimentManager.is_bullet(env_id) and should_render):
         # HACK: force SubprocVecEnv for Bullet env
         # as Pybullet envs does not follow gym.render() interface
         vec_env_cls = SubprocVecEnv
@@ -265,8 +266,8 @@ def linear_schedule(initial_value: Union[float, str]) -> Callable[[float], float
 
 def get_trained_models(log_folder: str) -> Dict[str, Tuple[str, str]]:
     """
-    :param log_folder: (str) Root log folder
-    :return: (Dict[str, Tuple[str, str]]) Dict representing the trained agent
+    :param log_folder: Root log folder
+    :return: Dict representing the trained agents
     """
     trained_models = {}
     for algo in os.listdir(log_folder):
@@ -289,15 +290,19 @@ def get_latest_run_id(log_path: str, env_id: str) -> int:
     :return: latest run number
     """
     max_run_id = 0
-    for path in glob.glob(log_path + f"/{env_id}_[0-9]*"):
-        file_name = path.split("/")[-1]
+    for path in glob.glob(os.path.join(log_path, env_id + "_[0-9]*")):
+        file_name = os.path.basename(path)
         ext = file_name.split("_")[-1]
         if env_id == "_".join(file_name.split("_")[:-1]) and ext.isdigit() and int(ext) > max_run_id:
             max_run_id = int(ext)
     return max_run_id
 
 
-def get_saved_hyperparams(stats_path: str, norm_reward: bool = False, test_mode: bool = False) -> Tuple[Dict[str, Any], str]:
+def get_saved_hyperparams(
+    stats_path: str,
+    norm_reward: bool = False,
+    test_mode: bool = False,
+) -> Tuple[Dict[str, Any], str]:
     """
     :param stats_path:
     :param norm_reward:

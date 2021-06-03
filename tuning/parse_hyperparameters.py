@@ -44,13 +44,10 @@ def action_noise(hyper, algo, n_actions):
   Configure Action Noise from hyperparameter logs
   """
   if hyper['params_episodic']:
-      hyper['params_n_episodes_rollout'] = 1
-      hyper['params_train_freq'], hyper['params_gradient_steps'] = -1, -1
+      hyper['params_train_freq'] = (1, "episode") 
   else:
-      hyper['params_train_freq'] = hyper['params_train_freq']
-      hyper['params_gradient_steps'] = hyper['params_train_freq']
-      hyper['params_n_episodes_rollout'] = -1
-      
+      hyper['params_train_freq'] = (hyper['params_train_freq'], "steps")
+
   if hyper["params_noise_type"] == "normal":  
     hyper["params_action_noise"] = NormalActionNoise(
       mean=np.zeros(n_actions), sigma= hyper['params_noise_std'] * np.ones(n_actions))
@@ -145,7 +142,7 @@ def a2c(env, hyper, policy = "MlpPolicy", tensorboard_log = None, verbose = 1,
 
 def ppo(env, hyper, policy = "MlpPolicy", 
         verbose = 0, tensorboard_log = None, seed = 0, 
-        use_sde = True, device = "auto"):
+        use_sde = True, sde_sample_freq = -1, device = "auto"):
 
   policy_kwargs = make_policy_kwargs(hyper, "ppo")
   model = PPO('MlpPolicy', env, 
@@ -163,7 +160,7 @@ def ppo(env, hyper, policy = "MlpPolicy",
               gae_lambda = hyper["params_gae_lambda"],
               max_grad_norm = hyper["params_max_grad_norm"],
               vf_coef = hyper["params_vf_coef"],
-              sde_sample_freq = hyper["params_sde_sample_freq"],
+              sde_sample_freq = sde_sample_freq, # hyper["params_sde_sample_freq"],
               policy_kwargs = policy_kwargs,
               device = device
           )
@@ -189,8 +186,8 @@ def ddpg(env, hyper, policy = "MlpPolicy",
               buffer_size = np.int(hyper['params_buffer_size']),
               action_noise = hyper['params_action_noise'],
               train_freq = np.int(hyper['params_train_freq']),
-              gradient_steps = np.int(hyper['params_train_freq']),
-              n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
+              # gradient_steps = np.int(hyper['params_train_freq']),
+              # n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
               policy_kwargs=policy_kwargs,
               device = device)
   return model
@@ -238,9 +235,9 @@ def td3(env, hyper, policy = "MlpPolicy",
               batch_size = np.int(hyper['params_batch_size']),            
               buffer_size = np.int(hyper['params_buffer_size']),
               action_noise = hyper['params_action_noise'],
-              train_freq = np.int(hyper['params_train_freq']),
-              gradient_steps = np.int(hyper['params_train_freq']),
-              n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
+              train_freq = hyper['params_train_freq'],
+              # gradient_steps = np.int(hyper['params_train_freq']),
+              # n_episodes_rollout = np.int(hyper['params_n_episodes_rollout']),
               learning_starts = learning_starts,
               policy_kwargs=policy_kwargs,
               device = device)

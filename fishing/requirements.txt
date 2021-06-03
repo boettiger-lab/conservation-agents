@@ -1,0 +1,12 @@
+stable-baselines3[extra]>=1.1.0a7
+box2d-py==2.3.8
+pybullet
+gym-minigrid
+scikit-optimize
+optuna
+pytablewriter
+seaborn
+pyyaml>=5.1
+sb3-contrib>=1.1.0a7
+gym_fishing
+gym_conservation
