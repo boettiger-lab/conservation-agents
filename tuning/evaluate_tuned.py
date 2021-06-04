@@ -18,6 +18,7 @@ def main():  # noqa: C901
     parser.add_argument("--seed", help="Random generator seed", type=int, default=0)
     parser.add_argument("-tb", "--tensorboard-log", help="Tensorboard log dir", default="", type=str)
     parser.add_argument("-i", "--i", help="use i'th best model", default="0", type=int)
+    parser.add_argument("--use_sde", help="use sde", default=False, type=bool)
 
     args = parser.parse_args()
     train_from_logs(args.algo, 
@@ -30,7 +31,7 @@ def main():  # noqa: C901
                     verbose = args.verbose, 
                     n_envs = args.n_envs,
                     outdir = "results",
-                    use_sde = False,
+                    use_sde = args.use_sde,
                     i = args.i)
 
 
