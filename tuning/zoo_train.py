@@ -105,10 +105,13 @@ if __name__ == "__main__":  # noqa: C901
             closest_match = difflib.get_close_matches(env_id, registered_envs, n=1)[0]
         except IndexError:
             closest_match = "'no close match found...'"
-        raise ValueError(f"{env_id} not found in gym registry, you maybe meant {closest_match}?")
+        raise ValueError(print("{env_id} not found in gym registry, you maybe meant {closest_match}?"))
 
     # Unique id to ensure there is no race condition for the folder creation
-    uuid_str = f"_{uuid.uuid4()}" if args.uuid else ""
+    if args.uuid :
+        uuid_str = "_{uuid.uuid4()}" 
+    else :
+        uuid_str = ""
     if args.seed < 0:
         # Seed but with a random one
         args.seed = np.random.randint(2 ** 32 - 1, dtype="int64").item()
@@ -118,7 +121,7 @@ if __name__ == "__main__":  # noqa: C901
     # Setting num threads to 1 makes things run faster on cpu
     if args.num_threads > 0:
         if args.verbose > 1:
-            print(f"Setting torch.num_threads to {args.num_threads}")
+            print("Setting torch.num_threads to {args.num_threads}")
         th.set_num_threads(args.num_threads)
 
     if args.trained_agent != "":
@@ -127,7 +130,7 @@ if __name__ == "__main__":  # noqa: C901
         ), "The trained_agent must be a valid path to a .zip file"
 
     print("=" * 10, env_id, "=" * 10)
-    print(f"Seed: {args.seed}")
+    print("Seed: {args.seed}")
 
     exp_manager = ExperimentManager(
         args,
