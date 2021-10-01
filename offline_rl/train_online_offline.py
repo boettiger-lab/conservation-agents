@@ -61,7 +61,8 @@ def main():
         model.learn(total_timesteps=n_timesteps, log_interval=1000)
         model.save(model_name)
         model.save_replay_buffer(model_name)
-    # Converting replay buffer to d3rlpy MDPDataset
+    
+    # Converting replay buffer to d3rlpy MDPDataset and training offline agent
     dataset = to_mdp_dataset(model.replay_buffer)
     offline_model = CQL(
         use_gpu=True,
