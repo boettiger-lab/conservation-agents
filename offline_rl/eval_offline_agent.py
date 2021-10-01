@@ -14,14 +14,18 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-env = gym.make("fishing-v1")
+def main():
+  env = gym.make("fishing-v1")
+  
+  cql_agent = CQL()
+  cql_agent.build_with_env(env)
+  cql_agent.load_model(args.model)
+  
+  wrapped_model = SB3Wrapper(cql_agent)
+  
+  # Evaluating the agent
+  offline_agent_df = simulate_mdp(env, wrapped_model, 10)
+  plot_mdp(env, offline_agent_df, output=f"trash_{args.model[:-3]}.png")
 
-cql_agent = CQL()
-cql_agent.build_with_env(env)
-cql_agent.load_model(args.model)
-
-wrapped_model = SB3Wrapper(cql_agent)
-
-# Evaluating the agent
-offline_agent_df = simulate_mdp(env, wrapped_model, 10)
-plot_mdp(env, offline_agent_df, output=f"trash_{args.model[:-3]}.png")
+if __name__=="__main__":
+  main()
