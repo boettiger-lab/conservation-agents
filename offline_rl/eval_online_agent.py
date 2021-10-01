@@ -13,7 +13,11 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-env = gym.make("fishing-v1")
-model = SAC.load(args.model)
-eval_df = simulate_mdp(env, model, 10)
-plot_mdp(env, eval_df, output=f"trash_{args.model}.png")
+def main():
+  env = gym.make("fishing-v1")
+  model = SAC.load(args.model)
+  eval_df = simulate_mdp(env, model, 10)
+  plot_mdp(env, eval_df, output=f"trash_{args.model}.png")
+
+if __name__=="__main__":
+  main()
